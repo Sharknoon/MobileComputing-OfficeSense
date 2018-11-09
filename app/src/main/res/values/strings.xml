@@ -8,4 +8,8 @@
     <string name="Open">Open</string>
     <string name="Close">Close</string>
     <string name="temperature">Temperature</string>
+    <string name="light">Light</string>
+    <string name="humidity">Humidity</string>
+    <string name="noise">Noise</string>
+
 </resources>

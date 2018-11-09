@@ -5,9 +5,38 @@
     android:layout_height="match_parent"
     tools:context=".HistoryFragment">
 
-    <com.jjoe64.graphview.GraphView
-        android:id="@+id/temperatureGraph"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="200dip" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/temperatureGraph"
+                android:layout_width="match_parent"
+                android:layout_height="200dip" />
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/lightGraph"
+                android:layout_width="match_parent"
+                android:layout_height="200dip" />
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/humidityGraph"
+                android:layout_width="match_parent"
+                android:layout_height="200dip" />
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/noiseGraph"
+                android:layout_width="match_parent"
+                android:layout_height="200dip" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </FrameLayout>

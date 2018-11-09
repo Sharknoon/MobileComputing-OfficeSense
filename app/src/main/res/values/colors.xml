@@ -5,7 +5,7 @@
     <color name="colorAccent">#c0392b</color>
     <color name="colorTemperature">#FF0000</color>
     <color name="colorTemperature2">#2fFF0000</color>
-    <!--<color name="colorHighlight2">#4285F4</color>-->
-    <!--<color name="colorHighlight3">#F4B400</color>-->
-    <!--<color name="colorHighlight4">#0F9D58</color>-->
+    <color name="colorLight">#ffff00</color>
+    <color name="colorHumidity">#00FF00</color>
+    <color name="colorNoise">#0000FF</color>
 </resources>

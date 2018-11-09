@@ -23,11 +23,34 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initTemperatureGraph()
+        initGraph(
+                view.findViewById(R.id.temperatureGraph) as GraphView,
+                getColor(view.context, R.color.colorTemperature),
+                getColor(view.context, R.color.colorTemperature2),
+                getString(R.string.temperature)
+        )
+        initGraph(
+                view.findViewById(R.id.lightGraph) as GraphView,
+                getColor(view.context, R.color.colorLight),
+                getColor(view.context, R.color.colorTemperature2),
+                getString(R.string.light)
+        )
+        initGraph(
+                view.findViewById(R.id.humidityGraph) as GraphView,
+                getColor(view.context, R.color.colorHumidity),
+                getColor(view.context, R.color.colorTemperature2),
+                getString(R.string.humidity)
+        )
+        initGraph(
+                view.findViewById(R.id.noiseGraph) as GraphView,
+                getColor(view.context, R.color.colorNoise),
+                getColor(view.context, R.color.colorTemperature2),
+                getString(R.string.noise)
+        )
     }
 
-    private fun initTemperatureGraph() {
-        val graph: GraphView = view?.findViewById(R.id.temperatureGraph) as GraphView
+    private fun initGraph(graph: GraphView, colorLine: Int, colorBackground: Int, title: String) {
+
         val series = LineGraphSeries<DataPoint>(
                 arrayOf(
                         DataPoint(0.0, 1.0),
@@ -36,7 +59,6 @@ class HistoryFragment : Fragment() {
                 )
         )
         graph.addSeries(series)
-        graph.title = resources.getString(R.string.temperature)
 
         //Disable all unnecessary junk
         graph.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.NONE
@@ -44,10 +66,11 @@ class HistoryFragment : Fragment() {
         graph.gridLabelRenderer.isHorizontalLabelsVisible = false
 
         //Add some color
-        val context = activity?.applicationContext ?: return
         series.isDrawBackground = true
-        series.backgroundColor = getColor(context, R.color.colorTemperature2)
-        series.color = getColor(context, R.color.colorTemperature)
+        series.color = colorLine
+        series.backgroundColor = colorBackground
         series.thickness = 4
+
+        graph.title = title
     }
 }
