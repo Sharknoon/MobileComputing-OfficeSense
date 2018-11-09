@@ -13,6 +13,6 @@
         android:layout_margin="25dp"
         android:adjustViewBounds="true"
         app:srcCompat="@drawable/ic_sensors"
-        android:contentDescription="@string/logo_content_description" />
+        android:contentDescription="@string/app_name" />
 
 </LinearLayout>

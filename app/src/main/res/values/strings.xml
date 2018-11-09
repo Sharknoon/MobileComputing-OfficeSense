@@ -7,5 +7,5 @@
     <string name="title_about">About</string>
     <string name="Open">Open</string>
     <string name="Close">Close</string>
-    <string name="logo_content_description">logo</string>
+    <string name="temperature">Temperature</string>
 </resources>
