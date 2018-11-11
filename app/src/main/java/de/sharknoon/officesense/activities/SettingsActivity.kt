@@ -29,16 +29,16 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
+        private val groupKeySensorAlarm = "com.android.example.WORK_EMAIL"
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preferences, rootKey)
 
-            val GROUP_KEY_WORK_EMAIL = "com.android.example.WORK_EMAIL"
             val button = findPreference("debug")
             val context = view?.context ?: return
             button.onPreferenceClickListener = Preference.OnPreferenceClickListener {
 
-                val newMessageNotification = NotificationCompat.Builder(context, CHANNEL_ID)
+                val newMessageNotification = NotificationCompat.Builder(context, channelID)
                         .setSmallIcon(R.drawable.ic_logo)
                         .setContentTitle("Title")
                         .setContentText("Text")
@@ -46,7 +46,7 @@ class SettingsActivity : AppCompatActivity() {
                         .setStyle(NotificationCompat.BigTextStyle()
                                 .bigText("This here is the real big shi..äh Text"))
 
-                        .setGroup(GROUP_KEY_WORK_EMAIL)
+                        .setGroup(groupKeySensorAlarm)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .build()
 
@@ -59,7 +59,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        private val CHANNEL_ID: String = "ALARMS_CHANNEL"
+        private val channelID: String = "ALARMS_CHANNEL"
 
         fun createNotificationChannel(context: Context) {
             // Create the NotificationChannel, but only on API 26+ because
@@ -68,7 +68,7 @@ class SettingsActivity : AppCompatActivity() {
                 val name = getString(R.string.channel_name)
                 val descriptionText = getString(R.string.channel_description)
                 val importance = NotificationManager.IMPORTANCE_HIGH
-                val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                val channel = NotificationChannel(channelID, name, importance).apply {
                     description = descriptionText
                 }
                 // Register the channel with the system

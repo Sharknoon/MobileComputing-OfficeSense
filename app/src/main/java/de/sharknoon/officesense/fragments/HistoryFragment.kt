@@ -52,7 +52,7 @@ class HistoryFragment : Fragment() {
                 getString(R.string.noise)
         )
 
-        initSwipeRefreshLAyout(view)
+        initSwipeRefreshLayout(view)
     }
 
     private fun initGraph(graph: GraphView, colorLine: Int, title: String) {
@@ -87,7 +87,7 @@ class HistoryFragment : Fragment() {
         graph.title = title
     }
 
-    private fun initSwipeRefreshLAyout(view: View) {
+    private fun initSwipeRefreshLayout(view: View) {
         // Lookup the swipe container view
         val swipeContainer = view.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
 
