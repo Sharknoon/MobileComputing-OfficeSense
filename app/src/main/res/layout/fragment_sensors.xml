@@ -1,13 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/GridLayout1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SensorsFragment">
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:columnCount="2"
+    android:orientation="horizontal"
+    android:rowCount="4"
+    tools:context=".activities.MainActivity">
+
+    <ImageView
+        android:id="@+id/iconTemperature"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/temperature"
+        app:srcCompat="@drawable/ic_temperature" />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/title_sensors" />
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center_vertical"
+        android:text="38°C" />
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/iconLight"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/light"
+        app:srcCompat="@drawable/ic_light" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center_vertical"
+        android:text="77lx" />
+
+    <ImageView
+        android:id="@+id/iconHumidity"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/humidity"
+        app:srcCompat="@drawable/ic_humidity" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center_vertical"
+        android:text="66%" />
+
+    <ImageView
+        android:id="@+id/iconNoise"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/noise"
+        app:srcCompat="@drawable/ic_noise" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center_vertical"
+        android:text="60db" />
+
+</GridLayout>

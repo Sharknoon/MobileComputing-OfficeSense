@@ -1,5 +1,6 @@
-package de.sharknoon.officesense
+package de.sharknoon.officesense.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -7,9 +8,12 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.widget.Toast
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
+import de.sharknoon.officesense.R
+import de.sharknoon.officesense.fragments.HistoryFragment
+import de.sharknoon.officesense.fragments.HomeFragment
+import de.sharknoon.officesense.fragments.SensorsFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -84,11 +88,13 @@ class MainActivity : AppCompatActivity() {
             val id = item.itemId
             when (id) {
                 R.id.navigation_settings -> {
-                    Toast.makeText(this@MainActivity, R.string.title_settings, Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, SettingsActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.navigation_about -> {
-                    Toast.makeText(this@MainActivity, R.string.title_about, Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, AboutActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false

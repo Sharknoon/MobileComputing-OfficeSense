@@ -1,15 +1,23 @@
-package de.sharknoon.officesense
+package de.sharknoon.officesense.fragments
 
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat.getColor
+import android.support.v4.widget.SwipeRefreshLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.GridLabelRenderer
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
+import de.sharknoon.officesense.R
+
+
 
 
 class HistoryFragment : Fragment() {
@@ -26,30 +34,28 @@ class HistoryFragment : Fragment() {
         initGraph(
                 view.findViewById(R.id.temperatureGraph) as GraphView,
                 getColor(view.context, R.color.colorTemperature),
-                getColor(view.context, R.color.colorTemperature2),
                 getString(R.string.temperature)
         )
         initGraph(
                 view.findViewById(R.id.lightGraph) as GraphView,
                 getColor(view.context, R.color.colorLight),
-                getColor(view.context, R.color.colorTemperature2),
                 getString(R.string.light)
         )
         initGraph(
                 view.findViewById(R.id.humidityGraph) as GraphView,
                 getColor(view.context, R.color.colorHumidity),
-                getColor(view.context, R.color.colorTemperature2),
                 getString(R.string.humidity)
         )
         initGraph(
                 view.findViewById(R.id.noiseGraph) as GraphView,
                 getColor(view.context, R.color.colorNoise),
-                getColor(view.context, R.color.colorTemperature2),
                 getString(R.string.noise)
         )
+
+        initSwipeRefreshLAyout(view)
     }
 
-    private fun initGraph(graph: GraphView, colorLine: Int, colorBackground: Int, title: String) {
+    private fun initGraph(graph: GraphView, colorLine: Int, title: String) {
 
         val series = LineGraphSeries<DataPoint>(
                 arrayOf(
@@ -62,15 +68,48 @@ class HistoryFragment : Fragment() {
 
         //Disable all unnecessary junk
         graph.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.NONE
-        graph.gridLabelRenderer.isVerticalLabelsVisible = false
+        //graph.gridLabelRenderer.isVerticalLabelsVisible = false
         graph.gridLabelRenderer.isHorizontalLabelsVisible = false
+        graph.gridLabelRenderer.numVerticalLabels = 2
 
         //Add some color
         series.isDrawBackground = true
         series.color = colorLine
-        series.backgroundColor = colorBackground
+        series.backgroundColor = Color.argb(
+                47,
+                Color.red(colorLine),
+                Color.green(colorLine),
+                Color.blue(colorLine)
+        )
+
         series.thickness = 4
 
         graph.title = title
     }
+
+    private fun initSwipeRefreshLAyout(view: View) {
+        // Lookup the swipe container view
+        val swipeContainer = view.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
+
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener {
+            refresh(view.context)
+            Handler().postDelayed({
+                // Stop animation (This will be after 3 seconds)
+                swipeContainer.isRefreshing = false
+            }, 4000) // Delay in millis
+
+        }
+
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light)
+    }
+
+    private fun refresh(context: Context) {
+        Toast.makeText(context, "Refreshing...", Toast.LENGTH_SHORT).show()
+    }
+
 }
