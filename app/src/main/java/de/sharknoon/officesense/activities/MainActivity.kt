@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.isColored = true
 
         //Shows only the title when it is alive
-        bottomNavigation.titleState = AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE
+        bottomNavigation.titleState = AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE_FORCE
 
         //Creating Fragments
         val homeFragment = HomeFragment()
