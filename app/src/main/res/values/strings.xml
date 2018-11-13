@@ -8,12 +8,17 @@
     <string name="Open">Open</string>
     <string name="Close">Close</string>
     <string name="temperature">Temperature</string>
+    <string name="unit_temperature">%1$s °C</string>
     <string name="light">Light</string>
+    <string name="unit_light">%1$s lx</string>
     <string name="humidity">Humidity</string>
+    <string name="unit_humidity">%1$s &#37;</string>
     <string name="noise">Noise</string>
+    <string name="unit_noise">%1$s db</string>
 
     <string name="channel_name">sensor_alarms</string>
     <string name="channel_description">This notifications are telling you about abnormal sensor values like a too high temperature or a too low humidity.</string>
     <string name="text_about">This project was part of the course \"Mobile Computing\" of the HTWG Constance. It was made by Patrick Kempf and Josua Frank</string>
+    <string name="missing">-</string>
 
 </resources>

@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference
-        android:key="username"
-        android:summary="Please provide your username"
-        android:title="Your Name" />
+        android:key="url"
+        android:defaultValue="http://htwg.sharknoon.de/officesense/home"
+        android:summary="The URL to the server with the sensors to get the data"
+        android:title="Server-URL" />
     <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="applicationUpdates"
-        android:summary="This option if selected will allow the application to check for latest versions."
-        android:title="Application Updates" />
-    <ListPreference
-        android:defaultValue="1"
-        android:entries="@array/listArray"
-        android:entryValues="@array/listValues"
-        android:key="downloadType"
-        android:summary="Select the kind of data that you would like to download"
-        android:title="Download Details" />
+        android:key="notifications"
+        android:defaultValue="true"
+        android:summary="This option if selected will allow the application to notify you when a sensor senses abnormal values"
+        android:title="Sensor Notifications" />
     <Preference
         android:key="debug"
-        android:summary="This is a (very) cool button"
-        android:title="Acts like a button" />
+        android:summary="Don't touch this, this is just for the cool developers!"
+        android:title="DO NOT PRESS" />
 </PreferenceScreen>

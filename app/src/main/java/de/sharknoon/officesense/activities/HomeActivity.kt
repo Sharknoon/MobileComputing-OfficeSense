@@ -3,7 +3,6 @@ package de.sharknoon.officesense.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
-import android.support.v4.app.Fragment
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -14,10 +13,11 @@ import de.sharknoon.officesense.R
 import de.sharknoon.officesense.fragments.HistoryFragment
 import de.sharknoon.officesense.fragments.HomeFragment
 import de.sharknoon.officesense.fragments.SensorsFragment
+import de.sharknoon.officesense.utils.openFragment
 
-class MainActivity : AppCompatActivity() {
 
-    private var toggle: ActionBarDrawerToggle? = null
+class HomeActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,12 +104,7 @@ class MainActivity : AppCompatActivity() {
         toggle = abdt
     }
 
-    private fun openFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
+    private var toggle: ActionBarDrawerToggle? = null
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (toggle?.onOptionsItemSelected(item) == true) true else super.onOptionsItemSelected(item)

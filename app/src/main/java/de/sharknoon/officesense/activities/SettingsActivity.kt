@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationManagerCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
+import android.view.MenuItem
 import de.sharknoon.officesense.R
 
 class SettingsActivity : AppCompatActivity() {
@@ -17,6 +18,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val settingsFragment = SettingsFragment()
         settingsFragment.createNotificationChannel(this)
@@ -25,6 +27,11 @@ class SettingsActivity : AppCompatActivity() {
                 .replace(R.id.settings_container, settingsFragment)
                 .commit()
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        finish()
+        return true
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
@@ -42,29 +49,29 @@ class SettingsActivity : AppCompatActivity() {
             val context = activity ?: return
             button.onPreferenceClickListener = Preference.OnPreferenceClickListener {
 
-                val SUMMARY_ID = 0
-                val GROUP_KEY_WORK_EMAIL = "com.android.example.WORK_EMAIL"
+                val summaryID = 0
+                val groupKey = "com.android.example.WORK_EMAIL"
 
-                val newMessageNotification1 = NotificationCompat.Builder(context, CHANNEL_ID)
+                val newMessageNotification1 = NotificationCompat.Builder(context, channelId)
                         .setSmallIcon(R.drawable.ic_logo)
                         .setContentTitle("Title 1")
                         .setContentText("You will not believe...")
-                        .setGroup(GROUP_KEY_WORK_EMAIL)
+                        .setGroup(groupKey)
                         .setStyle(NotificationCompat.BigTextStyle()
                                 .bigText("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."))
 
                         .build()
 
-                val newMessageNotification2 = NotificationCompat.Builder(context, CHANNEL_ID)
+                val newMessageNotification2 = NotificationCompat.Builder(context, channelId)
                         .setSmallIcon(R.drawable.ic_home)
                         .setContentTitle("Title 2")
                         .setContentText("Please join us to celebrate the...")
-                        .setGroup(GROUP_KEY_WORK_EMAIL)
+                        .setGroup(groupKey)
                         .setStyle(NotificationCompat.BigTextStyle()
                                 .bigText("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."))
                         .build()
 
-                val summaryNotification = NotificationCompat.Builder(context, CHANNEL_ID)
+                val summaryNotification = NotificationCompat.Builder(context, channelId)
                         .setContentTitle("Summary")
                         //set content text to support devices running API level < 24
                         .setContentText("Two new messages")
@@ -76,7 +83,7 @@ class SettingsActivity : AppCompatActivity() {
                                 .setBigContentTitle("2 new messages")
                                 .setSummaryText("janedoe@example.com"))
                         //specify which group this notification belongs to
-                        .setGroup(GROUP_KEY_WORK_EMAIL)
+                        .setGroup(groupKey)
                         //set this notification as the summary for the group
                         .setGroupSummary(true)
                         .build()
@@ -84,14 +91,14 @@ class SettingsActivity : AppCompatActivity() {
                 NotificationManagerCompat.from(context).apply {
                     notify(42, newMessageNotification1)
                     notify(43, newMessageNotification2)
-                    notify(SUMMARY_ID, summaryNotification)
+                    notify(summaryID, summaryNotification)
                 }
 
                 true
             }
         }
 
-        private val CHANNEL_ID: String = "ALARMS_CHANNEL"
+        private val channelId: String = "ALARMS_CHANNEL"
 
         fun createNotificationChannel(context: Context) {
             // Create the NotificationChannel, but only on API 26+ because
@@ -100,7 +107,7 @@ class SettingsActivity : AppCompatActivity() {
                 val name = getString(R.string.channel_name)
                 val descriptionText = getString(R.string.channel_description)
                 val importance = NotificationManager.IMPORTANCE_HIGH
-                val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                val channel = NotificationChannel(channelId, name, importance).apply {
                     description = descriptionText
                 }
                 // Register the channel with the system

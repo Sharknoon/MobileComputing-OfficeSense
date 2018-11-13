@@ -1,85 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/GridLayout1"
+    android:id="@+id/swipeContainer"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:layout_marginTop="50dp"
-    android:columnCount="2"
-    android:orientation="horizontal"
-    android:rowCount="4"
-    tools:context=".activities.MainActivity">
+    tools:context=".activities.HomeActivity">
 
-    <ImageView
-        android:id="@+id/iconTemperature"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:contentDescription="@string/temperature"
-        app:srcCompat="@drawable/ic_temperature" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginLeft="30dp"
-        android:gravity="center_vertical"
-        android:text="38 °C"
-        android:textColor="@android:color/black"
-        android:textSize="30sp" />
-
-    <ImageView
-        android:id="@+id/iconLight"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:contentDescription="@string/light"
-        app:srcCompat="@drawable/ic_light" />
-
-    <TextView
+    <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:text="77 lx"
-        android:textColor="@android:color/black"
-        android:textSize="30sp" />
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/iconHumidity"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:contentDescription="@string/humidity"
-        app:srcCompat="@drawable/ic_humidity" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:text="66 %"
-        android:textColor="@android:color/black"
-        android:textSize="30sp" />
+        <GridLayout
+            android:id="@+id/GridLayout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
+            android:columnCount="2"
+            android:orientation="horizontal"
+            android:rowCount="4">
 
-    <ImageView
-        android:id="@+id/iconNoise"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:contentDescription="@string/noise"
-        app:srcCompat="@drawable/ic_noise" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:text="60 db"
-        android:textColor="@android:color/black"
-        android:textSize="30sp" />
+            <ImageView
+                android:id="@+id/iconTemperature"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="@string/temperature"
+                app:srcCompat="@drawable/ic_temperature" />
 
-</GridLayout>
+            <TextView
+                android:id="@+id/textViewTemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="30dp"
+                android:gravity="center_vertical"
+                android:text="@string/missing"
+                android:textColor="@android:color/black"
+                android:textSize="30sp" />
+
+            <ImageView
+                android:id="@+id/iconLight"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/light"
+                app:srcCompat="@drawable/ic_light" />
+
+            <TextView
+                android:id="@+id/textViewLight"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/missing"
+                android:textColor="@android:color/black"
+                android:textSize="30sp" />
+
+            <ImageView
+                android:id="@+id/iconHumidity"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/humidity"
+                app:srcCompat="@drawable/ic_humidity" />
+
+            <TextView
+                android:id="@+id/textViewHumidity"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/missing"
+                android:textColor="@android:color/black"
+                android:textSize="30sp" />
+
+            <ImageView
+                android:id="@+id/iconNoise"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/noise"
+                app:srcCompat="@drawable/ic_noise" />
+
+            <TextView
+                android:id="@+id/textViewNoise"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/missing"
+                android:textColor="@android:color/black"
+                android:textSize="30sp" />
+
+
+        </GridLayout>
+    </GridLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
