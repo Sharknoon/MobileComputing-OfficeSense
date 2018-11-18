@@ -1,9 +1,5 @@
 package de.sharknoon.officesense.activities
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
@@ -21,13 +17,12 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val settingsFragment = SettingsFragment()
-        settingsFragment.createNotificationChannel(this)
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.settings_container, settingsFragment)
                 .commit()
-
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         finish()
@@ -47,9 +42,8 @@ class SettingsActivity : AppCompatActivity() {
 
             val button = findPreference("debug")
             val context = activity ?: return
+            var counter = 1
             button.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-
-                val summaryID = 0
                 val groupKey = "com.android.example.WORK_EMAIL"
 
                 val newMessageNotification1 = NotificationCompat.Builder(context, channelId)
@@ -89,9 +83,9 @@ class SettingsActivity : AppCompatActivity() {
                         .build()
 
                 NotificationManagerCompat.from(context).apply {
-                    notify(42, newMessageNotification1)
-                    notify(43, newMessageNotification2)
-                    notify(summaryID, summaryNotification)
+                    notify(counter++, newMessageNotification1)
+                    notify(counter++, newMessageNotification2)
+                    notify(42, summaryNotification)
                 }
 
                 true
@@ -100,22 +94,7 @@ class SettingsActivity : AppCompatActivity() {
 
         private val channelId: String = "ALARMS_CHANNEL"
 
-        fun createNotificationChannel(context: Context) {
-            // Create the NotificationChannel, but only on API 26+ because
-            // the NotificationChannel class is new and not in the support library
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val name = getString(R.string.channel_name)
-                val descriptionText = getString(R.string.channel_description)
-                val importance = NotificationManager.IMPORTANCE_HIGH
-                val channel = NotificationChannel(channelId, name, importance).apply {
-                    description = descriptionText
-                }
-                // Register the channel with the system
-                val notificationManager: NotificationManager =
-                        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.createNotificationChannel(channel)
-            }
-        }
     }
+
 }
 
