@@ -13,6 +13,8 @@ import com.jjoe64.graphview.GridLabelRenderer
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import de.sharknoon.officesense.R
+import de.sharknoon.officesense.models.History
+import de.sharknoon.officesense.models.Sensors
 import de.sharknoon.officesense.networking.getSensorHistory
 
 
@@ -27,26 +29,13 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initGraph(
-                view.findViewById(R.id.temperatureGraph) as GraphView,
-                getColor(view.context, R.color.colorTemperature),
-                getString(R.string.temperature)
-        )
-        initGraph(
-                view.findViewById(R.id.lightGraph) as GraphView,
-                getColor(view.context, R.color.colorLight),
-                getString(R.string.light)
-        )
-        initGraph(
-                view.findViewById(R.id.humidityGraph) as GraphView,
-                getColor(view.context, R.color.colorHumidity),
-                getString(R.string.humidity)
-        )
-        initGraph(
-                view.findViewById(R.id.noiseGraph) as GraphView,
-                getColor(view.context, R.color.colorNoise),
-                getString(R.string.noise)
-        )
+        enumValues<Sensors>().forEach {
+            initGraph(
+                    view.findViewById(it.graph) as GraphView,
+                    getColor(view.context, it.graphColor),
+                    getString(it.sensorName)
+            )
+        }
 
         initSwipeRefreshLayout(view)
         refreshSensorHistory(view)
@@ -57,16 +46,10 @@ class HistoryFragment : Fragment() {
         val series = LineGraphSeries<DataPoint>(
                 arrayOf(
                         DataPoint(0.0, 1.0),
-                        DataPoint(1.0, 1.0)
+                        DataPoint(1.0, 3.0),
+                        DataPoint(2.0, 2.0)
                 )
         )
-        graph.addSeries(series)
-
-        //Disable all unnecessary junk
-        graph.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.NONE
-        //graph.gridLabelRenderer.isVerticalLabelsVisible = false
-        graph.gridLabelRenderer.isHorizontalLabelsVisible = false
-        graph.gridLabelRenderer.numVerticalLabels = 2
 
         //Add some color
         series.isDrawBackground = true
@@ -79,6 +62,14 @@ class HistoryFragment : Fragment() {
         )
 
         series.thickness = 4
+
+        graph.addSeries(series)
+
+        //Disable all unnecessary junk
+        graph.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.NONE
+        //graph.gridLabelRenderer.isVerticalLabelsVisible = false
+        graph.gridLabelRenderer.isHorizontalLabelsVisible = false
+        //graph.gridLabelRenderer.numVerticalLabels = 2
 
         graph.title = title
     }
@@ -101,12 +92,24 @@ class HistoryFragment : Fragment() {
 
     private fun refreshSensorHistory(view: View, onFinish: (() -> Unit) = {}) {
         getSensorHistory(view.context, { h ->
-            val graphView = view.findViewById(R.id.temperatureGraph) as GraphView
-            val seriesArray: Array<DataPoint> = h.measurementValues
-                    .map { DataPoint(it.id.time, it.temperature) }
-                    .toTypedArray()
-            graphView.addSeries(LineGraphSeries<DataPoint>(seriesArray))
+            refreshHistory(view, h, R.id.temperatureGraph) { it.temperature }
+            //Todo add other values as soon as there are more values
+            onFinish.invoke()
         }, { onFinish.invoke() })
+    }
+
+    private fun refreshHistory(view: View, h: History, graphID: Int, valueGetter: (History.Value) -> Double) {
+        var counter = 0.0
+        val graphView = view.findViewById(graphID) as GraphView
+        val seriesArray: Array<DataPoint> = h.measurementValues
+                .stream()
+//                    .sorted { v1, v2 -> v1.id.compareTo(v2.id) }
+                .map { DataPoint(counter++, valueGetter.invoke(it)) }
+                .toArray { arrayOfNulls<DataPoint>(it) }
+
+        val series = graphView.series[0]
+        if (series is LineGraphSeries<*>)
+            (series as LineGraphSeries<DataPoint>).resetData(seriesArray)
     }
 
 }

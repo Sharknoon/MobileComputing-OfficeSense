@@ -1,7 +1,8 @@
 package de.sharknoon.officesense.models
 
-import java.util.*
+data class History(val measurementValues: List<Value>) {
 
-data class History(val measurementValues: List<Value>)
+    //Ignores the date to parse a lot faster
+    data class Value(/*val id: LocalDateTime, */val temperature: Double)
+}
 
-data class Value(val id: Calendar, val temperature: Double)

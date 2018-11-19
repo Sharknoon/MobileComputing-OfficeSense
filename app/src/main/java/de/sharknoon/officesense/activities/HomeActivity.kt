@@ -18,6 +18,7 @@ import de.sharknoon.officesense.fragments.HistoryFragment
 import de.sharknoon.officesense.fragments.HomeFragment
 import de.sharknoon.officesense.fragments.SensorsFragment
 import de.sharknoon.officesense.utils.openFragment
+import net.danlew.android.joda.JodaTimeAndroid
 
 
 class HomeActivity : AppCompatActivity() {
@@ -25,6 +26,8 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        JodaTimeAndroid.init(this)
+
         setContentView(R.layout.activity_main)
 
         createBottomNavigationBar()
