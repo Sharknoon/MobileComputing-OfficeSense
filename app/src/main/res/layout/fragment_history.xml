@@ -19,25 +19,25 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.jjoe64.graphview.GraphView
+                <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/temperatureGraph"
                     android:layout_width="match_parent"
-                    android:layout_height="200dip" />
+                    android:layout_height="200dp" />
 
-                <com.jjoe64.graphview.GraphView
+                <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/lightGraph"
                     android:layout_width="match_parent"
-                    android:layout_height="200dip" />
+                    android:layout_height="200dp" />
 
-                <com.jjoe64.graphview.GraphView
+                <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/humidityGraph"
                     android:layout_width="match_parent"
-                    android:layout_height="200dip" />
+                    android:layout_height="200dp" />
 
-                <com.jjoe64.graphview.GraphView
+                <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/noiseGraph"
                     android:layout_width="match_parent"
-                    android:layout_height="200dip" />
+                    android:layout_height="200dp" />
 
 
             </LinearLayout>

@@ -1,6 +1,7 @@
 package de.sharknoon.officesense.fragments
 
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat.getColor
@@ -8,14 +9,19 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.jjoe64.graphview.GraphView
-import com.jjoe64.graphview.GridLabelRenderer
-import com.jjoe64.graphview.series.DataPoint
-import com.jjoe64.graphview.series.LineGraphSeries
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.data.DataSet
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import de.sharknoon.officesense.R
 import de.sharknoon.officesense.models.History
 import de.sharknoon.officesense.models.Sensors
+import de.sharknoon.officesense.models.Value
 import de.sharknoon.officesense.networking.getSensorHistory
+import org.joda.time.LocalTime
+import java.util.stream.Collectors
 
 
 class HistoryFragment : Fragment() {
@@ -31,7 +37,7 @@ class HistoryFragment : Fragment() {
 
         enumValues<Sensors>().forEach {
             initGraph(
-                    view.findViewById(it.graph) as GraphView,
+                    view.findViewById(it.graph) as LineChart,
                     getColor(view.context, it.graphColor),
                     getString(it.sensorName)
             )
@@ -41,37 +47,67 @@ class HistoryFragment : Fragment() {
         refreshSensorHistory(view)
     }
 
-    private fun initGraph(graph: GraphView, colorLine: Int, title: String) {
+    private fun initGraph(chart: LineChart, colorLine: Int, title: String) {
 
-        val series = LineGraphSeries<DataPoint>(
-                arrayOf(
-                        DataPoint(0.0, 1.0),
-                        DataPoint(1.0, 3.0),
-                        DataPoint(2.0, 2.0)
-                )
+        val data = listOf(
+                Entry(0.0F, 1.0F),
+                Entry(1.0F, 3.0F),
+                Entry(2.0F, 2.0F)
         )
 
+        val dataSet = LineDataSet(data, title)
+
         //Add some color
-        series.isDrawBackground = true
-        series.color = colorLine
-        series.backgroundColor = Color.argb(
-                47,
+        dataSet.color = colorLine
+
+//        dataSet.lineWidth = 4F
+        //dataSet.setDrawCircles(false)
+
+        val c1 = Color.argb(
+                150,
                 Color.red(colorLine),
                 Color.green(colorLine),
                 Color.blue(colorLine)
         )
+        val c2 = Color.argb(
+                20,
+                Color.red(colorLine),
+                Color.green(colorLine),
+                Color.blue(colorLine)
+        )
+        val gd = GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(c1, c2))
+        dataSet.setDrawFilled(true)
+        dataSet.fillDrawable = gd
 
-        series.thickness = 4
+        val lineData = LineData(dataSet)
 
-        graph.addSeries(series)
-
-        //Disable all unnecessary junk
-        graph.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.NONE
-        //graph.gridLabelRenderer.isVerticalLabelsVisible = false
-        graph.gridLabelRenderer.isHorizontalLabelsVisible = false
-        //graph.gridLabelRenderer.numVerticalLabels = 2
-
-        graph.title = title
+        chart.data = lineData
+        val desc = Description()
+        desc.text = ""
+        chart.description = desc
+//
+//        series.isDrawBackground = true
+//        series.color = colorLine
+//        series.backgroundColor = Color.argb(
+//                47,
+//                Color.red(colorLine),
+//                Color.green(colorLine),
+//                Color.blue(colorLine)
+//        )
+//
+//        series.thickness = 4
+//
+//        graph.addSeries(series)
+//
+//        //Disable all unnecessary junk
+//        graph.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.NONE
+//        //graph.gridLabelRenderer.isVerticalLabelsVisible = false
+//        graph.gridLabelRenderer.isHorizontalLabelsVisible = false
+//        //graph.gridLabelRenderer.numVerticalLabels = 2
+//
+//        graph.title = title
     }
 
     private fun initSwipeRefreshLayout(view: View) {
@@ -92,24 +128,26 @@ class HistoryFragment : Fragment() {
 
     private fun refreshSensorHistory(view: View, onFinish: (() -> Unit) = {}) {
         getSensorHistory(view.context, { h ->
-            refreshHistory(view, h, R.id.temperatureGraph) { it.temperature }
-            //Todo add other values as soon as there are more values
+            enumValues<Sensors>().forEach {
+                refreshHistory(view, h, it.graph, it.valueGetter::invoke)
+            }
             onFinish.invoke()
         }, { onFinish.invoke() })
     }
 
-    private fun refreshHistory(view: View, h: History, graphID: Int, valueGetter: (History.Value) -> Double) {
-        var counter = 0.0
-        val graphView = view.findViewById(graphID) as GraphView
-        val seriesArray: Array<DataPoint> = h.measurementValues
+    private fun refreshHistory(view: View, h: History, graphID: Int, valueGetter: (Value) -> Float) {
+        val chart = view.findViewById(graphID) as LineChart
+        val data = h.measurementValues
                 .stream()
-//                    .sorted { v1, v2 -> v1.id.compareTo(v2.id) }
-                .map { DataPoint(counter++, valueGetter.invoke(it)) }
-                .toArray { arrayOfNulls<DataPoint>(it) }
-
-        val series = graphView.series[0]
-        if (series is LineGraphSeries<*>)
-            (series as LineGraphSeries<DataPoint>).resetData(seriesArray)
+                //.sorted { v1, v2 -> v1.id.compareTo(v2.id) }
+                .map { Entry(getXValueFromDate(it.id.toLocalTime()), valueGetter.invoke(it)) }
+                .collect(Collectors.toList())
+        if (data.isEmpty()) return
+        val dataSet = chart.data.getDataSetByIndex(0) as DataSet<*>
+        dataSet.values = data
+        //chart.invalidate()
     }
+
+    private fun getXValueFromDate(time: LocalTime) = time.millisOfDay * 1000.0F * 60
 
 }
