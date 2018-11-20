@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,33 +15,108 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp">
+
+                <ImageView
+                    android:id="@+id/imageViewTemperature"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginTop="10dp"
+                    android:contentDescription="@string/temperature"
+                    app:srcCompat="@drawable/ic_temperature" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_toEndOf="@+id/imageViewTemperature"
+                    android:text="@string/temperature"
+                    android:textSize="24sp" />
 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/temperatureGraph"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp" />
+                    android:layout_height="200dp"
+                    android:layout_below="@+id/imageViewTemperature" />
+
+                <ImageView
+                    android:id="@+id/imageViewLight"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_below="@+id/temperatureGraph"
+                    android:layout_marginTop="10dp"
+                    android:contentDescription="@string/light"
+                    app:srcCompat="@drawable/ic_light" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/temperatureGraph"
+                    android:layout_marginTop="10dp"
+                    android:layout_toEndOf="@+id/imageViewLight"
+                    android:text="@string/light"
+                    android:textSize="24sp" />
 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/lightGraph"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp" />
+                    android:layout_height="200dp"
+                    android:layout_below="@+id/imageViewLight" />
+
+                <ImageView
+                    android:id="@+id/imageViewHumidity"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_below="@+id/lightGraph"
+                    android:layout_marginTop="10dp"
+                    android:contentDescription="@string/humidity"
+                    app:srcCompat="@drawable/ic_humidity" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lightGraph"
+                    android:layout_marginTop="10dp"
+                    android:layout_toEndOf="@+id/imageViewHumidity"
+                    android:text="@string/humidity"
+                    android:textSize="24sp" />
 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/humidityGraph"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp" />
+                    android:layout_height="200dp"
+                    android:layout_below="@+id/imageViewHumidity" />
+
+                <ImageView
+                    android:id="@+id/imageViewNoise"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_below="@+id/humidityGraph"
+                    android:layout_marginTop="10dp"
+                    android:contentDescription="@string/noise"
+                    app:srcCompat="@drawable/ic_noise" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/humidityGraph"
+                    android:layout_marginTop="10dp"
+                    android:layout_toEndOf="@+id/imageViewNoise"
+                    android:text="@string/noise"
+                    android:textSize="24sp" />
 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/noiseGraph"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp" />
+                    android:layout_height="200dp"
+                    android:layout_below="@+id/imageViewNoise" />
 
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </ScrollView>
 

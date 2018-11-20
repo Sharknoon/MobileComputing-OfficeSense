@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.DataSet
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -21,6 +22,7 @@ import de.sharknoon.officesense.models.Sensors
 import de.sharknoon.officesense.models.Value
 import de.sharknoon.officesense.networking.getSensorHistory
 import org.joda.time.LocalTime
+import org.joda.time.format.DateTimeFormat
 import java.util.stream.Collectors
 
 
@@ -59,9 +61,9 @@ class HistoryFragment : Fragment() {
 
         //Add some color
         dataSet.color = colorLine
-
-//        dataSet.lineWidth = 4F
-        //dataSet.setDrawCircles(false)
+        dataSet.setCircleColor(colorLine)
+        dataSet.circleHoleColor = colorLine
+        dataSet.setDrawValues(false)
 
         val c1 = Color.argb(
                 150,
@@ -69,12 +71,7 @@ class HistoryFragment : Fragment() {
                 Color.green(colorLine),
                 Color.blue(colorLine)
         )
-        val c2 = Color.argb(
-                20,
-                Color.red(colorLine),
-                Color.green(colorLine),
-                Color.blue(colorLine)
-        )
+        val c2 = Color.TRANSPARENT
         val gd = GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
                 intArrayOf(c1, c2))
@@ -87,6 +84,16 @@ class HistoryFragment : Fragment() {
         val desc = Description()
         desc.text = ""
         chart.description = desc
+        chart.axisRight.isEnabled = false
+        chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        chart.xAxis.setValueFormatter { value, _ -> getTextFromXValue(value) }
+        chart.xAxis.setDrawGridLines(false)
+        chart.xAxis.setDrawAxisLine(false)
+        chart.axisLeft.setDrawGridLines(false)
+        chart.axisLeft.setDrawAxisLine(false)
+
+        chart.legend.isEnabled = false
+
 //
 //        series.isDrawBackground = true
 //        series.color = colorLine
@@ -149,5 +156,11 @@ class HistoryFragment : Fragment() {
     }
 
     private fun getXValueFromDate(time: LocalTime) = time.millisOfDay * 1000.0F * 60
+
+    private fun getTextFromXValue(xValue: Float): String {
+        val localTime = LocalTime.fromMillisOfDay((xValue / 1000 / 60).toLong())
+        val formatter = DateTimeFormat.forPattern("HH:mm")
+        return localTime.toString(formatter)
+    }
 
 }
