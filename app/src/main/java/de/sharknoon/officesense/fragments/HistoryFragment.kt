@@ -3,23 +3,27 @@ package de.sharknoon.officesense.fragments
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat.getColor
 import android.support.v4.widget.SwipeRefreshLayout
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Toast
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.DataSet
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import de.sharknoon.officesense.R
 import de.sharknoon.officesense.models.History
 import de.sharknoon.officesense.models.Sensors
-import de.sharknoon.officesense.models.Value
+import de.sharknoon.officesense.networking.DateRanges
 import de.sharknoon.officesense.networking.getSensorHistory
 import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
@@ -43,26 +47,27 @@ class HistoryFragment : Fragment() {
                     getColor(view.context, it.graphColor),
                     getString(it.sensorName)
             )
+            initGraphButtons(view, it)
         }
 
         initSwipeRefreshLayout(view)
-        refreshSensorHistory(view)
+        refreshSensorHistories(view)
     }
 
-    private fun initGraph(chart: LineChart, colorLine: Int, title: String) {
-
-        val data = listOf(
-                Entry(0.0F, 1.0F),
-                Entry(1.0F, 3.0F),
-                Entry(2.0F, 2.0F)
-        )
+    private fun initGraph(
+            chart: LineChart,
+            colorLine: Int,
+            title: String,
+            data: List<Entry> = listOf(
+                    Entry(0F, 0F),
+                    Entry(1439F, 0F)
+            )) {
 
         val dataSet = LineDataSet(data, title)
 
         //Add some color
         dataSet.color = colorLine
-        dataSet.setCircleColor(colorLine)
-        dataSet.circleHoleColor = colorLine
+        dataSet.setDrawCircles(false)
         dataSet.setDrawValues(false)
 
         val c1 = Color.argb(
@@ -78,9 +83,6 @@ class HistoryFragment : Fragment() {
         dataSet.setDrawFilled(true)
         dataSet.fillDrawable = gd
 
-        val lineData = LineData(dataSet)
-
-        chart.data = lineData
         val desc = Description()
         desc.text = ""
         chart.description = desc
@@ -94,36 +96,30 @@ class HistoryFragment : Fragment() {
 
         chart.legend.isEnabled = false
 
-//
-//        series.isDrawBackground = true
-//        series.color = colorLine
-//        series.backgroundColor = Color.argb(
-//                47,
-//                Color.red(colorLine),
-//                Color.green(colorLine),
-//                Color.blue(colorLine)
-//        )
-//
-//        series.thickness = 4
-//
-//        graph.addSeries(series)
-//
-//        //Disable all unnecessary junk
-//        graph.gridLabelRenderer.gridStyle = GridLabelRenderer.GridStyle.NONE
-//        //graph.gridLabelRenderer.isVerticalLabelsVisible = false
-//        graph.gridLabelRenderer.isHorizontalLabelsVisible = false
-//        //graph.gridLabelRenderer.numVerticalLabels = 2
-//
-//        graph.title = title
+        chart.xAxis.axisMinimum = 0F
+
+        chart.xAxis.axisMaximum = 1440F
+
+        val lineData = LineData(dataSet)
+
+        chart.data = lineData
+        chart.invalidate()
+        Log.i("chart", "${chart.xAxis.axisMaximum}")
+    }
+
+    private fun initGraphButtons(view: View, s: Sensors) {
+        view
+                .findViewById<RadioGroup>(s.graphTimeButtons)
+                .setOnCheckedChangeListener { _, _ -> refreshSensorHistory(view, s) }
     }
 
     private fun initSwipeRefreshLayout(view: View) {
         // Lookup the swipe container view
         val swipeContainer = view.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
 
-        // Setup refreshSensorHistory listener which triggers new data loading
+        // Setup refreshSensorHistories listener which triggers new data loading
         swipeContainer.setOnRefreshListener {
-            refreshSensorHistory(view) { swipeContainer.isRefreshing = false }
+            refreshSensorHistories(view) { swipeContainer.isRefreshing = false }
         }
 
         // Configure the refreshing colors
@@ -133,32 +129,60 @@ class HistoryFragment : Fragment() {
                 android.R.color.holo_red_light)
     }
 
-    private fun refreshSensorHistory(view: View, onFinish: (() -> Unit) = {}) {
-        getSensorHistory(view.context, { h ->
-            enumValues<Sensors>().forEach {
-                refreshHistory(view, h, it.graph, it.valueGetter::invoke)
-            }
-            onFinish.invoke()
-        }, { onFinish.invoke() })
+    private fun refreshSensorHistories(view: View, onFinish: (() -> Unit) = {}) {
+        enumValues<Sensors>().forEach {
+            refreshSensorHistory(view, it, onFinish)
+        }
     }
 
-    private fun refreshHistory(view: View, h: History, graphID: Int, valueGetter: (Value) -> Float) {
-        val chart = view.findViewById(graphID) as LineChart
+    private fun refreshSensorHistory(view: View, s: Sensors, onFinish: (() -> Unit) = {}) {
+        val string = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext).getString("serverURL", "")
+                ?: ""
+
+        getSensorHistory(
+                string,
+                s,
+                { h ->
+                    redrawSensorHistory(view, h, s)
+                    onFinish.invoke()
+                },
+                { e ->
+                    onFinish.invoke()
+                    Log.e("networking", "Could not get ${s.name.toLowerCase()}-data from $string/${s.urlName}Per${getDateRange(view, s).url} because of a ${e.javaClass.simpleName}")
+                    Toast.makeText(view.context, "Could not get ${s.name.toLowerCase()}-data from $string/${s.urlName}Per${getDateRange(view, s).url} because of a ${e.javaClass.simpleName}", Toast.LENGTH_LONG).show()
+                },
+                getDateRange(view, s)
+        )
+    }
+
+    private fun getDateRange(view: View, sensors: Sensors): DateRanges {
+        val radioGroup = view.findViewById<RadioGroup>(sensors.graphTimeButtons)
+        val checkedRadioButton = view.findViewById<RadioButton>(radioGroup.checkedRadioButtonId)
+        return DateRanges.values()[radioGroup.indexOfChild(checkedRadioButton)]
+    }
+
+    private fun redrawSensorHistory(view: View, h: History, s: Sensors) {
         val data = h.measurementValues
                 .stream()
-                //.sorted { v1, v2 -> v1.id.compareTo(v2.id) }
-                .map { Entry(getXValueFromDate(it.id.toLocalTime()), valueGetter.invoke(it)) }
+                .map { Entry(getXValueFromDate(it.id.toLocalTime()), s.valueGetter.invoke(it)) }
+                .filter { e -> e.y != 0F }
                 .collect(Collectors.toList())
+
         if (data.isEmpty()) return
-        val dataSet = chart.data.getDataSetByIndex(0) as DataSet<*>
-        dataSet.values = data
-        //chart.invalidate()
+
+        initGraph(
+                view.findViewById(s.graph) as LineChart,
+                getColor(view.context, s.graphColor),
+                getString(s.sensorName),
+                data
+        )
+
     }
 
-    private fun getXValueFromDate(time: LocalTime) = time.millisOfDay * 1000.0F * 60
+    private fun getXValueFromDate(time: LocalTime) = (time.millisOfDay / 1000.0 / 60).toFloat()
 
     private fun getTextFromXValue(xValue: Float): String {
-        val localTime = LocalTime.fromMillisOfDay((xValue / 1000 / 60).toLong())
+        val localTime = LocalTime.fromMillisOfDay((xValue * 1000 * 60).toLong())
         val formatter = DateTimeFormat.forPattern("HH:mm")
         return localTime.toString(formatter)
     }

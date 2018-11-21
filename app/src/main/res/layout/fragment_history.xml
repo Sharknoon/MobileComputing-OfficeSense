@@ -43,11 +43,46 @@
                     android:layout_height="200dp"
                     android:layout_below="@+id/imageViewTemperature" />
 
+                <RadioGroup
+                    android:id="@+id/radioButtonsTemperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/temperatureGraph"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonTemperatureDay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/one_day" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonTemperatureWeek"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_week" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonTemperatureMonth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_month" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonTemperatureYear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_year" />
+
+                </RadioGroup>
+
                 <ImageView
                     android:id="@+id/imageViewLight"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_below="@+id/temperatureGraph"
+                    android:layout_below="@+id/radioButtonsTemperature"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/light"
                     app:srcCompat="@drawable/ic_light" />
@@ -55,7 +90,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/temperatureGraph"
+                    android:layout_below="@+id/radioButtonsTemperature"
                     android:layout_marginTop="10dp"
                     android:layout_toEndOf="@+id/imageViewLight"
                     android:text="@string/light"
@@ -67,11 +102,47 @@
                     android:layout_height="200dp"
                     android:layout_below="@+id/imageViewLight" />
 
+
+                <RadioGroup
+                    android:id="@+id/radioButtonsLight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lightGraph"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonLightDay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/one_day" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonLightWeek"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_week" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonLightMonth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_month" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonLightYear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_year" />
+
+                </RadioGroup>
+
                 <ImageView
                     android:id="@+id/imageViewHumidity"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_below="@+id/lightGraph"
+                    android:layout_below="@+id/radioButtonsLight"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/humidity"
                     app:srcCompat="@drawable/ic_humidity" />
@@ -79,7 +150,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/lightGraph"
+                    android:layout_below="@+id/radioButtonsLight"
                     android:layout_marginTop="10dp"
                     android:layout_toEndOf="@+id/imageViewHumidity"
                     android:text="@string/humidity"
@@ -91,11 +162,46 @@
                     android:layout_height="200dp"
                     android:layout_below="@+id/imageViewHumidity" />
 
+                <RadioGroup
+                    android:id="@+id/radioButtonsHumidity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/humidityGraph"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonHumidityDay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/one_day" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonHumidityWeek"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_week" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonHumidityMonth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_month" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonHumidityYear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_year" />
+
+                </RadioGroup>
+
                 <ImageView
                     android:id="@+id/imageViewNoise"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_below="@+id/humidityGraph"
+                    android:layout_below="@+id/radioButtonsHumidity"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/noise"
                     app:srcCompat="@drawable/ic_noise" />
@@ -103,7 +209,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/humidityGraph"
+                    android:layout_below="@+id/radioButtonsHumidity"
                     android:layout_marginTop="10dp"
                     android:layout_toEndOf="@+id/imageViewNoise"
                     android:text="@string/noise"
@@ -115,6 +221,40 @@
                     android:layout_height="200dp"
                     android:layout_below="@+id/imageViewNoise" />
 
+                <RadioGroup
+                    android:id="@+id/radioButtonsNoise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/noiseGraph"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonNoiseDay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/one_day" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonNoiseWeek"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_week" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonNoiseMonth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_month" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonNoiseYear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/one_year" />
+
+                </RadioGroup>
 
             </RelativeLayout>
 

@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference
-        android:key="temperatureURL"
-        android:defaultValue="http://htwg.sharknoon.de/officesense/home"
-        android:summary="The URL to the server with the temperature sensor to get the data"
-        android:title="Server-URL for temperatures" />
-    <EditTextPreference
-        android:defaultValue="http://htwg.sharknoon.de/officesense/temperaturePerDay"
-        android:key="historyurl"
-        android:summary="The URL to the server with the database with the sensor values of the last days"
-        android:title="Server-URL for the history" />
+        android:key="serverURL"
+        android:defaultValue="http://htwg.sharknoon.de/officesense"
+        android:summary="The URL to the server with the sensors to get the data"
+        android:title="Server-URL for the sensor data" />
     <CheckBoxPreference
         android:key="notifications"
         android:defaultValue="true"
