@@ -1,8 +1,5 @@
 package de.sharknoon.officesense.networking
 
-import android.content.Context
-import android.support.v7.preference.PreferenceManager
-import android.widget.Toast
 import com.google.gson.GsonBuilder
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
@@ -10,10 +7,11 @@ import com.loopj.android.http.RequestParams
 import cz.msebera.android.httpclient.Header
 import de.sharknoon.officesense.models.History
 import de.sharknoon.officesense.models.Sensors
+import de.sharknoon.officesense.models.Values
 import de.sharknoon.officesense.utils.localDateTimeDeserializer
 import de.sharknoon.officesense.utils.localDateTimeSerializer
-import org.joda.time.LocalDate
-import org.joda.time.LocalDateTime
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.nio.charset.StandardCharsets
 
 private val parser = GsonBuilder()
@@ -21,21 +19,26 @@ private val parser = GsonBuilder()
         .registerTypeAdapter(LocalDateTime::class.java, localDateTimeDeserializer)
         .create()
 
-fun <T> getSensorValue(context: Context, clazz: Class<T>, sensorValueConsumer: ((t: T) -> Unit) = { }, onFailure: (() -> Unit) = { }) {
-    val baseUrl = PreferenceManager.getDefaultSharedPreferences(context).getString("temperatureURL", "")
-            ?: ""
-    executeGet(url = "http://htwg.sharknoon.de/officesense/home", responseHandler = object : AsyncHttpResponseHandler() {
+fun getSensorValues(
+        url: String,
+        sensorValuesConsumer: ((v: Values) -> Unit) = {},
+        onFailure: ((Throwable) -> Unit) = {}) {
+
+    val baseUrl = "$url/home"
+
+    executeGet(url = baseUrl, responseHandler = object : AsyncHttpResponseHandler() {
         override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray) {
             val response = responseBody.toString(StandardCharsets.UTF_8)
-            val sensorValue = parser.fromJson(response, clazz)
-            sensorValueConsumer.invoke(sensorValue)
+            val sensorValues = parser.fromJson<Values>(response, Values::class.java)
+            sensorValuesConsumer.invoke(sensorValues)
         }
 
         override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
-            Toast.makeText(context, "Server unavailable", Toast.LENGTH_SHORT).show()
-            onFailure.invoke()
+            onFailure.invoke(error ?: Exception())
         }
+
     })
+
 }
 
 fun getSensorHistory(
@@ -45,11 +48,11 @@ fun getSensorHistory(
         onFailure: ((Throwable) -> Unit) = {},
         dateRange: DateRanges = DateRanges.DAY) {
 
-    val endpoint = "/${sensor.urlName}Per${dateRange.url}"
+    val endpoint = "/${sensor.getURLName()}Per${dateRange.getName()}"
     val baseUrl = url + endpoint
 
     val pars = RequestParams()
-    pars.put(dateRange.id, LocalDate.now().toString())
+    pars.put(dateRange.getID(), dateRange.getUrlParameter(LocalDateTime.now()))
 
     executeGet(baseUrl, pars, object : AsyncHttpResponseHandler() {
         override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray) {
@@ -68,8 +71,15 @@ fun getSensorHistory(
     })
 }
 
-enum class DateRanges(val url: String, val id: String) {
-    DAY("Day", "dayId"), WEEK("Week", "weekId"), MONTH("Month", "monthId"), YEAR("Year", "yearId")
+enum class DateRanges(private val urlParameterGetter: (LocalDateTime) -> String) {
+    DAY({ it.toLocalDate().toString() }),
+    WEEK({ "" }),
+    MONTH({ it.format(DateTimeFormatter.ofPattern("yyyy-MM")) }),
+    YEAR({ it.year.toString() });
+
+    fun getName() = name.toLowerCase().capitalize()
+    fun getID() = name.toLowerCase() + "Id"
+    fun getUrlParameter(localDateTime: LocalDateTime) = urlParameterGetter.invoke(localDateTime)
 }
 
 private val client = AsyncHttpClient()

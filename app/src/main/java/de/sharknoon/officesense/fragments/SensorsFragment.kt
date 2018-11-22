@@ -1,6 +1,7 @@
 package de.sharknoon.officesense.fragments
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.LayoutInflater
@@ -9,11 +10,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import de.sharknoon.officesense.R
-import de.sharknoon.officesense.models.Humidity
-import de.sharknoon.officesense.models.Light
-import de.sharknoon.officesense.models.Noise
-import de.sharknoon.officesense.models.Temperature
-import de.sharknoon.officesense.networking.getSensorValue
+import de.sharknoon.officesense.models.Sensors
+import de.sharknoon.officesense.networking.getSensorValues
 import de.sharknoon.officesense.utils.cut
 
 class SensorsFragment : Fragment() {
@@ -46,48 +44,21 @@ class SensorsFragment : Fragment() {
     }
 
     private fun refreshSensorValues(view: View, onFinish: (() -> Unit)? = { }) {
-        var amountSensorsToRefresh = 1
-        var successfulSensorValues = amountSensorsToRefresh
-        fun onFinishCounter(success: Boolean) {
-            amountSensorsToRefresh -= 1
-            if (success) {
-                successfulSensorValues -= 1
-            }
-            if (amountSensorsToRefresh <= 0) {
+        val url = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext).getString("serverURL", "")
+                ?: ""
+
+        getSensorValues(url, { v ->
+            enumValues<Sensors>().forEach {
+                val textView = view.findViewById<TextView>(it.textView)
+                textView.text = getString(it.unit, it.valuesGetter.invoke(v).cut(2).toString())
+                Toast.makeText(view.context, "Successfully reloaded", Toast.LENGTH_SHORT).show()
                 onFinish?.invoke()
-                if (successfulSensorValues <= 0) {
-                    Toast.makeText(view.context, "Successfully reloaded", Toast.LENGTH_SHORT).show()
-                }
             }
-        }
+        }, {
+            Toast.makeText(view.context, "Error reloading because of a ${it.javaClass.simpleName}", Toast.LENGTH_SHORT).show()
+            onFinish?.invoke()
+        })
 
-        //Sensor 1 Temperature
-        getSensorValue(view.context, Temperature::class.java, { t: Temperature ->
-            val textViewTemperature = view.findViewById<TextView>(R.id.textViewTemperature)
-            textViewTemperature.text = getString(R.string.unit_temperature, t.temperature.cut(2).toString())
-            onFinishCounter(true)
-        }, { onFinishCounter(false) })
-
-        //Sensor 2 Light
-        getSensorValue(view.context, Light::class.java, { l: Light ->
-            val textViewTemperature = view.findViewById<TextView>(R.id.textViewLight)
-            textViewTemperature.text = getString(R.string.unit_light, l.light.toString())
-            onFinishCounter(true)
-        }, { onFinishCounter(false) })
-
-        //Sensor 3 Humidity
-        getSensorValue(view.context, Humidity::class.java, { h: Humidity ->
-            val textViewTemperature = view.findViewById<TextView>(R.id.textViewHumidity)
-            textViewTemperature.text = getString(R.string.unit_humidity, h.humidity.toString())
-            onFinishCounter(true)
-        }, { onFinishCounter(false) })
-
-        //Sensor 4 Noise
-        getSensorValue(view.context, Noise::class.java, { n: Noise->
-            val textViewTemperature = view.findViewById<TextView>(R.id.textViewNoise)
-            textViewTemperature.text = getString(R.string.unit_noise, n.noise.toString())
-            onFinishCounter(true)
-        }, { onFinishCounter(false) })
     }
 
 }

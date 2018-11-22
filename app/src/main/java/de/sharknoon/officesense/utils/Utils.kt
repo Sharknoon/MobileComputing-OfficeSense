@@ -6,7 +6,7 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializer
 import de.sharknoon.officesense.R
-import org.joda.time.LocalDateTime
+import org.threeten.bp.LocalDateTime
 
 
 fun Double.cut(decimals: Int): Double {

@@ -12,7 +12,7 @@
     <string name="light">Light</string>
     <string name="unit_light">%1$s lx</string>
     <string name="humidity">Humidity</string>
-    <string name="unit_humidity">%1$s &#37;</string>
+    <string name="unit_humidity">%1$s \%%</string>
     <string name="noise">Noise</string>
     <string name="unit_noise">%1$s db</string>
 
@@ -20,10 +20,10 @@
     <string name="channel_description">This notifications are telling you about abnormal sensor values like a too high temperature or a too low humidity.</string>
     <string name="text_about">This project was part of the course \"Mobile Computing\" of the HTWG Constance. It was made by Patrick Kempf and Josua Frank</string>
     <string name="missing">-</string>
-    <string name="one_day">1 Tag</string>
-    <string name="one_week">1 Woche</string>
-    <string name="one_month">1 Monat</string>
-    <string name="one_year">1 Jahr</string>
+    <string name="one_day">1 Day</string>
+    <string name="one_week">1 Week</string>
+    <string name="one_month">1 Month</string>
+    <string name="one_year">1 Year</string>
 
 
 </resources>

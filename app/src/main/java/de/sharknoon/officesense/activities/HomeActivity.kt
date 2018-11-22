@@ -10,15 +10,16 @@ import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.preference.PreferenceManager
 import android.view.MenuItem
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
+import com.jakewharton.threetenabp.AndroidThreeTen
 import de.sharknoon.officesense.R
 import de.sharknoon.officesense.fragments.HistoryFragment
 import de.sharknoon.officesense.fragments.HomeFragment
 import de.sharknoon.officesense.fragments.SensorsFragment
 import de.sharknoon.officesense.utils.openFragment
-import net.danlew.android.joda.JodaTimeAndroid
 
 
 class HomeActivity : AppCompatActivity() {
@@ -26,7 +27,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        JodaTimeAndroid.init(this)
+        AndroidThreeTen.init(this)
 
         setContentView(R.layout.activity_main)
 
@@ -35,6 +36,8 @@ class HomeActivity : AppCompatActivity() {
         createDrawer()
 
         createNotificationChannel(this)
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
     }
 
     private fun createBottomNavigationBar() {

@@ -1,47 +1,50 @@
 package de.sharknoon.officesense.models
 
 import de.sharknoon.officesense.R
-import org.joda.time.LocalDateTime
 
 enum class Sensors(val sensorName: Int,
-                   val urlName: String,
                    val graph: Int,
                    val graphColor: Int,
-                   val valueGetter: (Value) -> Float,
-                   val graphTimeButtons: Int) {
+                   val valueGetter: (History.Value) -> Float,
+                   val valuesGetter:(Values)->Double,
+                   val textView:Int,
+                   val unit: Int) {
     TEMPERATURE(
             R.string.temperature,
-            "temperature",
             R.id.temperatureGraph,
             R.color.colorTemperature,
             { it.temperature.toFloat() },
-            R.id.radioButtonsTemperature
+            { it.temperature },
+            R.id.textViewTemperature,
+            R.string.unit_temperature
     ),
     LIGHT(
             R.string.light,
-            "light",
             R.id.lightGraph,
             R.color.colorLight,
-            { 0.0F },
-            R.id.radioButtonsLight
+            { it.light.toFloat() },
+            { it.light },
+            R.id.textViewLight,
+            R.string.unit_light
     ),
     HUMIDITY(
             R.string.humidity,
-            "humidity",
             R.id.humidityGraph,
             R.color.colorHumidity,
-            { 0.0F },
-            R.id.radioButtonsHumidity
+            { it.humidity.toFloat() },
+            { it.humidity },
+            R.id.textViewHumidity,
+            R.string.unit_humidity
     ),
     NOISE(
             R.string.noise,
-            "noise",
             R.id.noiseGraph,
             R.color.colorNoise,
-            { 0.0F },
-            R.id.radioButtonsNoise
-    )
-}
+            { it.noise.toFloat() },
+            { it.noise },
+            R.id.textViewNoise,
+            R.string.unit_noise
+    );
 
-//Ignores the date to parse a lot faster
-data class Value(val id: LocalDateTime, val temperature: Double)
+    fun getURLName() = name.toLowerCase()
+}
