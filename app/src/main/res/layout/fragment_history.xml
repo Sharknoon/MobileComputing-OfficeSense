@@ -24,42 +24,52 @@
                     android:id="@+id/radioButtons"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:layout_centerHorizontal="true"
                     android:orientation="horizontal">
 
-                    <ToggleButton
+                    <RadioButton
+                        android:id="@+id/radioButtonDay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:textOff="@string/one_day"
-                        android:textOn="@string/one_day" />
+                        android:text="@string/one_day" />
 
-                    <ToggleButton
+                    <RadioButton
+                        android:id="@+id/radioButtonWeek"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textOff="@string/one_week"
-                        android:textOn="@string/one_week" />
+                        android:text="@string/one_week" />
 
-                    <ToggleButton
+                    <RadioButton
+                        android:id="@+id/radioButtonMonth"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textOff="@string/one_month"
-                        android:textOn="@string/one_month" />
+                        android:text="@string/one_month" />
 
-                    <ToggleButton
+                    <RadioButton
+                        android:id="@+id/radioButtonYear"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textOff="@string/one_year"
-                        android:textOn="@string/one_year" />
+                        android:text="@string/one_year" />
 
                 </RadioGroup>
+
+                <Button
+                    android:id="@+id/buttonCurrentDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/radioButtons"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="10dp" />
 
 
                 <ImageView
                     android:id="@+id/imageViewTemperature"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_below="@+id/radioButtons"
+                    android:layout_below="@+id/buttonCurrentDate"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/temperature"
                     app:srcCompat="@drawable/ic_temperature" />
@@ -67,7 +77,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/radioButtons"
+                    android:layout_below="@+id/buttonCurrentDate"
                     android:layout_marginTop="10dp"
                     android:layout_toEndOf="@+id/imageViewTemperature"
                     android:text="@string/temperature"
@@ -78,7 +88,8 @@
                     android:id="@+id/temperatureGraph"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_below="@+id/imageViewTemperature" />
+                    android:layout_below="@+id/imageViewTemperature"
+                    android:layout_marginBottom="10dp" />
 
                 <ImageView
                     android:id="@+id/imageViewLight"
@@ -103,7 +114,8 @@
                     android:id="@+id/lightGraph"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_below="@+id/imageViewLight" />
+                    android:layout_below="@+id/imageViewLight"
+                    android:layout_marginBottom="10dp" />
 
                 <ImageView
                     android:id="@+id/imageViewHumidity"
@@ -128,7 +140,8 @@
                     android:id="@+id/humidityGraph"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_below="@+id/imageViewHumidity" />
+                    android:layout_below="@+id/imageViewHumidity"
+                    android:layout_marginBottom="10dp" />
 
                 <ImageView
                     android:id="@+id/imageViewNoise"
@@ -153,7 +166,8 @@
                     android:id="@+id/noiseGraph"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_below="@+id/imageViewNoise" />
+                    android:layout_below="@+id/imageViewNoise"
+                    android:layout_marginBottom="10dp" />
 
             </RelativeLayout>
 

@@ -85,6 +85,7 @@ enum class DateRanges(private val urlParameterGetter: (LocalDateTime) -> String)
 private val client = AsyncHttpClient()
 
 fun executeGet(url: String, params: RequestParams? = null, responseHandler: AsyncHttpResponseHandler) {
-    client.connectTimeout = 3
+    client.setMaxRetriesAndTimeout(1, 3)
+    client.setTimeout(3)
     client.get(url, params, responseHandler)
 }

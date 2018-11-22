@@ -45,8 +45,8 @@ class HomeActivity : AppCompatActivity() {
 
         // Create items
         val itemHome = AHBottomNavigationItem(R.string.title_home, R.drawable.ic_home, R.color.colorPrimary)
-        val itemSensors = AHBottomNavigationItem(R.string.title_sensors, R.drawable.ic_sensors, R.color.colorPrimaryDark)
-        val itemHistory = AHBottomNavigationItem(R.string.title_history, R.drawable.ic_history, R.color.colorAccent)
+        val itemSensors = AHBottomNavigationItem(R.string.title_sensors, R.drawable.ic_sensors, R.color.colorAccent)
+        val itemHistory = AHBottomNavigationItem(R.string.title_history, R.drawable.ic_history, R.color.colorPrimary)
 
         // Add items
         bottomNavigation.addItem(itemHome)
@@ -102,11 +102,13 @@ class HomeActivity : AppCompatActivity() {
                 R.id.navigation_settings -> {
                     val intent = Intent(this, SettingsActivity::class.java)
                     startActivity(intent)
+                    dl.closeDrawers()
                     true
                 }
                 R.id.navigation_about -> {
                     val intent = Intent(this, AboutActivity::class.java)
                     startActivity(intent)
+                    dl.closeDrawers()
                     true
                 }
                 else -> false
@@ -123,7 +125,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
 
-    fun createNotificationChannel(context: Context) {
+    private fun createNotificationChannel(context: Context) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

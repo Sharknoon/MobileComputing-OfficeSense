@@ -11,10 +11,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
-import android.widget.ToggleButton
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
@@ -27,9 +27,11 @@ import de.sharknoon.officesense.models.Sensors
 import de.sharknoon.officesense.networking.DateRanges
 import de.sharknoon.officesense.networking.DateRanges.*
 import de.sharknoon.officesense.networking.getSensorHistory
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 import org.threeten.bp.format.TextStyle
 import java.util.*
 import java.util.stream.Collectors
@@ -37,7 +39,8 @@ import java.util.stream.Collectors
 
 class HistoryFragment : Fragment() {
 
-    var currentDateRange = DAY
+    private var currentDateRange = DAY
+    private var currentDate = LocalDate.now()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -57,6 +60,7 @@ class HistoryFragment : Fragment() {
 
         initSwipeRefreshLayout(view)
         initDateRangeButtons(view)
+        initCurrentDateButton(view)
         refreshSensorHistories(view)
     }
 
@@ -113,22 +117,24 @@ class HistoryFragment : Fragment() {
         val radioGroup = view.findViewById<RadioGroup>(R.id.radioButtons)
 
         radioGroup.setOnCheckedChangeListener { rg, checkedId ->
-            for (j in 0 until rg.childCount) {
-                val toggleButton = rg.getChildAt(j) as ToggleButton
-                toggleButton.isChecked = toggleButton.id == checkedId
-            }
+            currentDateRange = getDateRange(view)
+            refreshSensorHistories(view)
         }
 
-        for (j in 0 until radioGroup.childCount) {
-            val toggleButton = radioGroup.getChildAt(j) as ToggleButton
-            toggleButton.setOnClickListener(this::onToggle)
-        }
     }
 
-    fun onToggle(view: View) {
-        (view.parent as RadioGroup).check(view.id)
-        currentDateRange = getDateRange(view)
-        refreshSensorHistories(view)
+    private fun initCurrentDateButton(view: View) {
+        val button = view.findViewById<Button>(R.id.buttonCurrentDate)
+        button.text = currentDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+        button.setOnClickListener { v ->
+            val newFragment = DatePickerFragment()
+            newFragment.localDateConsumer = {
+                currentDate = it
+                button.text = currentDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+                refreshSensorHistories(view)
+            }
+            newFragment.show(fragmentManager, "datePicker")
+        }
     }
 
     private fun initSwipeRefreshLayout(view: View) {
