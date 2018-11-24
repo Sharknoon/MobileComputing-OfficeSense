@@ -26,7 +26,7 @@ import de.sharknoon.officesense.models.History
 import de.sharknoon.officesense.models.Sensors
 import de.sharknoon.officesense.networking.DateRanges
 import de.sharknoon.officesense.networking.DateRanges.*
-import de.sharknoon.officesense.networking.getSensorHistory
+import de.sharknoon.officesense.networking.getSensorsHistory
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
@@ -154,26 +154,19 @@ class HistoryFragment : Fragment() {
     }
 
     private fun refreshSensorHistories(view: View, onFinish: (() -> Unit) = {}) {
-        enumValues<Sensors>().forEach {
-            refreshSensorHistory(view, it, onFinish)
-        }
-    }
-
-    private fun refreshSensorHistory(view: View, s: Sensors, onFinish: (() -> Unit) = {}) {
         val url = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext).getString("serverURL", "")
                 ?: ""
 
-        getSensorHistory(
+        getSensorsHistory(
                 url,
-                s,
                 { h ->
-                    redrawSensorHistory(view, h, s)
+                    redrawSensorsHistory(view, h)
                     onFinish.invoke()
                 },
                 { e ->
                     onFinish.invoke()
-                    Log.e("networking", "Could not get ${s.name.toLowerCase()}-data from $url/${s.getURLName()}Per${currentDateRange.getName()} because of a ${e.javaClass.simpleName}")
-                    Toast.makeText(view.context, "Could not get ${s.name.toLowerCase()}-data from $url/${s.getURLName()}Per${currentDateRange.getName()} because of a ${e.javaClass.simpleName}", Toast.LENGTH_LONG).show()
+                    Log.e("networking", "Could not get history-data from $url/historyPer${currentDateRange.getName()} because of a ${e.javaClass.simpleName}")
+                    Toast.makeText(view.context, "Could not get history-data from $url/historyPer${currentDateRange.getName()} because of a ${e.javaClass.simpleName}", Toast.LENGTH_LONG).show()
                 },
                 currentDateRange
         )
@@ -185,22 +178,23 @@ class HistoryFragment : Fragment() {
         return DateRanges.values()[radioGroup.indexOfChild(checkedRadioButton)]
     }
 
-    private fun redrawSensorHistory(view: View, h: History, s: Sensors) {
-        val data = h.measurementValues
-                .stream()
-                .sorted { o1, o2 -> o1.id.compareTo(o2.id) }
-                .map { Entry(getXValueFromDate(it.id), s.valueGetter.invoke(it)) }
-                .filter { e -> e.y != 0F }
-                .collect(Collectors.toList())
+    private fun redrawSensorsHistory(view: View, h: History) {
+        enumValues<Sensors>().forEach { s ->
+            val data = h.measurementValues
+                    .stream()
+                    .sorted { o1, o2 -> o1.id.compareTo(o2.id) }
+                    .map { Entry(getXValueFromDate(it.id), s.valueGetter.invoke(it)) }
+                    .filter { e -> e.y != 0F }
+                    .collect(Collectors.toList())
 
-        if (data.isEmpty()) return
+            if (data.isEmpty()) return
 
-        initGraph(
-                view,
-                s,
-                data
-        )
-
+            initGraph(
+                    view,
+                    s,
+                    data
+            )
+        }
     }
 
     private fun getXValueFromDate(dateTime: LocalDateTime) = (dateTime.toEpochSecond(ZoneOffset.UTC) / 60).toFloat()

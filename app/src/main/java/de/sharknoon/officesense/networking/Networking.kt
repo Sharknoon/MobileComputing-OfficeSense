@@ -6,7 +6,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler
 import com.loopj.android.http.RequestParams
 import cz.msebera.android.httpclient.Header
 import de.sharknoon.officesense.models.History
-import de.sharknoon.officesense.models.Sensors
 import de.sharknoon.officesense.models.Values
 import de.sharknoon.officesense.utils.localDateTimeDeserializer
 import de.sharknoon.officesense.utils.localDateTimeSerializer
@@ -41,18 +40,17 @@ fun getSensorValues(
 
 }
 
-fun getSensorHistory(
+fun getSensorsHistory(
         url: String,
-        sensor: Sensors,
         sensorHistoryConsumer: ((h: History) -> Unit) = {},
         onFailure: ((Throwable) -> Unit) = {},
         dateRange: DateRanges = DateRanges.DAY) {
 
-    val endpoint = "/${sensor.getURLName()}Per${dateRange.getName()}"
+    val endpoint = "/historyPer${dateRange.getName()}"
     val baseUrl = url + endpoint
 
     val pars = RequestParams()
-    pars.put(dateRange.getID(), dateRange.getUrlParameter(LocalDateTime.now()))
+    pars.put(dateRange.getURLKey(), dateRange.getURLValue(LocalDateTime.now()))
 
     executeGet(baseUrl, pars, object : AsyncHttpResponseHandler() {
         override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray) {
@@ -73,13 +71,13 @@ fun getSensorHistory(
 
 enum class DateRanges(private val urlParameterGetter: (LocalDateTime) -> String) {
     DAY({ it.toLocalDate().toString() }),
-    WEEK({ "" }),
+    WEEK({ it.toLocalDate().toString() }),
     MONTH({ it.format(DateTimeFormatter.ofPattern("yyyy-MM")) }),
     YEAR({ it.year.toString() });
 
     fun getName() = name.toLowerCase().capitalize()
-    fun getID() = name.toLowerCase() + "Id"
-    fun getUrlParameter(localDateTime: LocalDateTime) = urlParameterGetter.invoke(localDateTime)
+    fun getURLKey(): String = if (this == WEEK) DAY.getURLKey() else name.toLowerCase() + "Id"
+    fun getURLValue(localDateTime: LocalDateTime) = urlParameterGetter.invoke(localDateTime)
 }
 
 private val client = AsyncHttpClient()
