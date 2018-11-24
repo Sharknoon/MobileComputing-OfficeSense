@@ -68,8 +68,8 @@ class HistoryFragment : Fragment() {
             view: View,
             sensor: Sensors,
             data: List<Entry> = listOf(
-                    Entry(0F, 0F),
-                    Entry(1439F, 0F)
+                    Entry(0F, 0F)
+//                    Entry(1439F, 0F)
             )) {
 
         val dataSet = LineDataSet(data, getString(sensor.sensorName))
@@ -126,14 +126,14 @@ class HistoryFragment : Fragment() {
     private fun initCurrentDateButton(view: View) {
         val button = view.findViewById<Button>(R.id.buttonCurrentDate)
         button.text = currentDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+        val datePickerFragment = DatePickerFragment()
+        datePickerFragment.localDateConsumer = {
+            currentDate = it
+            button.text = currentDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+            refreshSensorHistories(view)
+        }
         button.setOnClickListener { v ->
-            val newFragment = DatePickerFragment()
-            newFragment.localDateConsumer = {
-                currentDate = it
-                button.text = currentDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
-                refreshSensorHistories(view)
-            }
-            newFragment.show(fragmentManager, "datePicker")
+            datePickerFragment.show(fragmentManager, "datePicker")
         }
     }
 
@@ -160,15 +160,17 @@ class HistoryFragment : Fragment() {
         getSensorsHistory(
                 url,
                 { h ->
+                    Log.i("networking", "Successfully got history-data from $url/historyPer${currentDateRange.getName()}")
                     redrawSensorsHistory(view, h)
                     onFinish.invoke()
                 },
                 { e ->
                     onFinish.invoke()
-                    Log.e("networking", "Could not get history-data from $url/historyPer${currentDateRange.getName()} because of a ${e.javaClass.simpleName}")
-                    Toast.makeText(view.context, "Could not get history-data from $url/historyPer${currentDateRange.getName()} because of a ${e.javaClass.simpleName}", Toast.LENGTH_LONG).show()
+                    Log.e("networking", "Could not get history-data: $e")
+                    Toast.makeText(view.context, "Could not get history-data: $e", Toast.LENGTH_LONG).show()
                 },
-                currentDateRange
+                currentDateRange,
+                currentDate
         )
     }
 
@@ -179,15 +181,14 @@ class HistoryFragment : Fragment() {
     }
 
     private fun redrawSensorsHistory(view: View, h: History) {
-        enumValues<Sensors>().forEach { s ->
+        for (s in enumValues<Sensors>()) {
             val data = h.measurementValues
                     .stream()
                     .sorted { o1, o2 -> o1.id.compareTo(o2.id) }
                     .map { Entry(getXValueFromDate(it.id), s.valueGetter.invoke(it)) }
-                    .filter { e -> e.y != 0F }
                     .collect(Collectors.toList())
 
-            if (data.isEmpty()) return
+            if (data.isEmpty()) continue
 
             initGraph(
                     view,
@@ -197,8 +198,20 @@ class HistoryFragment : Fragment() {
         }
     }
 
+    private fun resetSensorsHistory(view: View) {
+        for (s in enumValues<Sensors>()) {
+            initGraph(view, s)
+        }
+    }
+
     private fun getXValueFromDate(dateTime: LocalDateTime) = (dateTime.toEpochSecond(ZoneOffset.UTC) / 60).toFloat()
 
+//    private fun getMaxXValue() = when (currentDateRange) {
+//        DAY -> 60 * 24F
+//        WEEK -> 60 * 24 * 7F
+//        MONTH -> 31
+//        YEAR -> 2F
+//    }
 
     private fun getTextFromXValue(xValue: Float): String {
         val localDateTime = LocalDateTime.ofEpochSecond((xValue * 60).toLong(), 0, ZoneOffset.UTC)

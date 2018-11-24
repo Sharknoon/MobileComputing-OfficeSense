@@ -9,6 +9,7 @@ import de.sharknoon.officesense.models.History
 import de.sharknoon.officesense.models.Values
 import de.sharknoon.officesense.utils.localDateTimeDeserializer
 import de.sharknoon.officesense.utils.localDateTimeSerializer
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.nio.charset.StandardCharsets
@@ -43,42 +44,48 @@ fun getSensorValues(
 fun getSensorsHistory(
         url: String,
         sensorHistoryConsumer: ((h: History) -> Unit) = {},
-        onFailure: ((Throwable) -> Unit) = {},
-        dateRange: DateRanges = DateRanges.DAY) {
+        onFailure: ((String) -> Unit) = {},
+        dateRange: DateRanges = DateRanges.DAY,
+        date: LocalDate) {
 
     val endpoint = "/historyPer${dateRange.getName()}"
     val baseUrl = url + endpoint
 
     val pars = RequestParams()
-    pars.put(dateRange.getURLKey(), dateRange.getURLValue(LocalDateTime.now()))
+    pars.put(dateRange.getURLKey(), dateRange.getURLValue(date))
 
     executeGet(baseUrl, pars, object : AsyncHttpResponseHandler() {
         override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray) {
             val response = responseBody.toString(StandardCharsets.UTF_8)
             val sensorHistory = parser.fromJson<History>(response, History::class.java)
             if (sensorHistory?.measurementValues == null) {
-                onFailure(400, null, null, null)
+                val error = parser.fromJson<Error>(response, Error::class.java)
+                onFailure.invoke(error.error)
+                return
             }
             sensorHistoryConsumer.invoke(sensorHistory)
         }
 
         override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
-            onFailure.invoke(error ?: Exception())
+            onFailure.invoke(error?.javaClass?.simpleName?.plus(": " + error.localizedMessage)
+                    ?: "Unknown error")
         }
 
     })
 }
 
-enum class DateRanges(private val urlParameterGetter: (LocalDateTime) -> String) {
-    DAY({ it.toLocalDate().toString() }),
-    WEEK({ it.toLocalDate().toString() }),
+enum class DateRanges(private val urlParameterGetter: (LocalDate) -> String) {
+    DAY({ it.toString() }),
+    WEEK({ it.toString() }),
     MONTH({ it.format(DateTimeFormatter.ofPattern("yyyy-MM")) }),
     YEAR({ it.year.toString() });
 
     fun getName() = name.toLowerCase().capitalize()
     fun getURLKey(): String = if (this == WEEK) DAY.getURLKey() else name.toLowerCase() + "Id"
-    fun getURLValue(localDateTime: LocalDateTime) = urlParameterGetter.invoke(localDateTime)
+    fun getURLValue(localDate: LocalDate) = urlParameterGetter.invoke(localDate)
 }
+
+class Error(val error: String = "Unknown error")
 
 private val client = AsyncHttpClient()
 
