@@ -51,11 +51,10 @@ class SensorsFragment : Fragment() {
             enumValues<Sensors>().forEach {
                 val textView = view.findViewById<TextView>(it.textView)
                 textView.text = getString(it.unit, it.valuesGetter.invoke(v).cut(2).toString())
-                Toast.makeText(view.context, "Successfully reloaded", Toast.LENGTH_SHORT).show()
                 onFinish?.invoke()
             }
         }, {
-            Toast.makeText(view.context, "Error reloading because of a ${it.javaClass.simpleName}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(view.context, "Could not get sensors data: $it", Toast.LENGTH_LONG).show()
             onFinish?.invoke()
         })
 

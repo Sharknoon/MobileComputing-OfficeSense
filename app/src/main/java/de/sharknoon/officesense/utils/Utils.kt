@@ -14,6 +14,11 @@ fun Double.cut(decimals: Int): Double {
     return (this * multiplier).toInt() / multiplier
 }
 
+fun Float.cut(decimals: Int): Float {
+    val multiplier = Math.pow(10.0, decimals.toDouble())
+    return ((this * multiplier).toInt() / multiplier).toFloat()
+}
+
 fun AppCompatActivity.openFragment(fragment: Fragment) {
     val transaction = supportFragmentManager.beginTransaction()
     transaction.replace(R.id.container, fragment)

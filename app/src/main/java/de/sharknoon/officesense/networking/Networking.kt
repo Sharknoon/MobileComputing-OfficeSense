@@ -22,7 +22,7 @@ private val parser = GsonBuilder()
 fun getSensorValues(
         url: String,
         sensorValuesConsumer: ((v: Values) -> Unit) = {},
-        onFailure: ((Throwable) -> Unit) = {}) {
+        onFailure: ((String) -> Unit) = {}) {
 
     val baseUrl = "$url/home"
 
@@ -30,11 +30,17 @@ fun getSensorValues(
         override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray) {
             val response = responseBody.toString(StandardCharsets.UTF_8)
             val sensorValues = parser.fromJson<Values>(response, Values::class.java)
+            if (sensorValues == null) {
+                val error = parser.fromJson<Error>(response, Error::class.java)
+                onFailure.invoke(error.error)
+                return
+            }
             sensorValuesConsumer.invoke(sensorValues)
         }
 
         override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
-            onFailure.invoke(error ?: Exception())
+            onFailure.invoke(error?.javaClass?.simpleName?.plus(": " + error.localizedMessage)
+                    ?: "Unknown error")
         }
 
     })

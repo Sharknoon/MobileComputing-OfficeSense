@@ -10,7 +10,8 @@ import org.threeten.bp.LocalDate
 class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     var localDateConsumer: (LocalDate) -> Unit = {}
-    var currentDate = LocalDate.now()
+    var currentDate: LocalDate = LocalDate.now()
+    var maxDate = currentDate
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use the current date as the default date in the picker
@@ -19,7 +20,9 @@ class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener 
         val day = currentDate.dayOfMonth
 
         // Create a new instance of DatePickerDialog and return it
-        return DatePickerDialog(activity, this, year, month, day)
+        val datePickerDialog = DatePickerDialog(context, this, year, month, day)
+        datePickerDialog.datePicker.maxDate = maxDate.toEpochDay() * 24 * 60 * 60 * 1000
+        return datePickerDialog
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
