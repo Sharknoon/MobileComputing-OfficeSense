@@ -27,6 +27,7 @@ import de.sharknoon.officesense.models.Sensors
 import de.sharknoon.officesense.networking.DateRanges
 import de.sharknoon.officesense.networking.DateRanges.*
 import de.sharknoon.officesense.networking.getSensorsHistory
+import de.sharknoon.officesense.utils.cut
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
@@ -116,7 +117,7 @@ class HistoryFragment : Fragment() {
     private fun initDateRangeButtons(view: View) {
         val radioGroup = view.findViewById<RadioGroup>(R.id.radioButtons)
 
-        radioGroup.setOnCheckedChangeListener { rg, checkedId ->
+        radioGroup.setOnCheckedChangeListener { _, _ ->
             currentDateRange = getDateRange(view)
             refreshSensorHistories(view)
         }
@@ -132,7 +133,7 @@ class HistoryFragment : Fragment() {
             button.text = currentDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
             refreshSensorHistories(view)
         }
-        button.setOnClickListener { v ->
+        button.setOnClickListener {
             datePickerFragment.show(fragmentManager, "datePicker")
         }
     }
@@ -166,6 +167,7 @@ class HistoryFragment : Fragment() {
                 },
                 { e ->
                     onFinish.invoke()
+                    resetSensorsHistory(view)
                     Log.e("networking", "Could not get history-data: $e")
                     Toast.makeText(view.context, "Could not get history-data: $e", Toast.LENGTH_LONG).show()
                 },
@@ -206,13 +208,6 @@ class HistoryFragment : Fragment() {
 
     private fun getXValueFromDate(dateTime: LocalDateTime) = (dateTime.toEpochSecond(ZoneOffset.UTC) / 60).toFloat()
 
-//    private fun getMaxXValue() = when (currentDateRange) {
-//        DAY -> 60 * 24F
-//        WEEK -> 60 * 24 * 7F
-//        MONTH -> 31
-//        YEAR -> 2F
-//    }
-
     private fun getTextFromXValue(xValue: Float): String {
         val localDateTime = LocalDateTime.ofEpochSecond((xValue * 60).toLong(), 0, ZoneOffset.UTC)
         return when (currentDateRange) {
@@ -223,6 +218,12 @@ class HistoryFragment : Fragment() {
         }
     }
 
-    private fun getTextFromYValue(xValue: Float, sensor: Sensors) = getString(sensor.unit, xValue.toString())
+    private fun getTextFromYValue(xValue: Float, sensor: Sensors) = getString(sensor.unit, xValue.cut(1).toString())
+
+    private fun getMaxDateForDatePicker() = LocalDate.now()
+
+    private fun getMinDateForDatePicker() {
+
+    }
 
 }
