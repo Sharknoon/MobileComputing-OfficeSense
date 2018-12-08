@@ -34,7 +34,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:contentDescription="@string/temperature"
-                    app:srcCompat="@drawable/ic_temperature" />
+                    app:srcCompat="@drawable/ic_temperature_filled" />
 
                 <TextView
                     android:id="@+id/textViewTemperature"
@@ -52,7 +52,7 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/light"
-                    app:srcCompat="@drawable/ic_light" />
+                    app:srcCompat="@drawable/ic_light_filled" />
 
                 <TextView
                     android:id="@+id/textViewLight"
@@ -71,7 +71,7 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/humidity"
-                    app:srcCompat="@drawable/ic_humidity" />
+                    app:srcCompat="@drawable/ic_humidity_filled" />
 
                 <TextView
                     android:id="@+id/textViewHumidity"
@@ -90,7 +90,7 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/noise"
-                    app:srcCompat="@drawable/ic_noise" />
+                    app:srcCompat="@drawable/ic_noise_filled" />
 
                 <TextView
                     android:id="@+id/textViewNoise"

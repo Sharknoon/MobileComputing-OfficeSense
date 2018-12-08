@@ -185,7 +185,7 @@ class HistoryFragment : Fragment() {
             val data = h.measurementValues
                     .stream()
                     .sorted { o1, o2 -> o1.id.compareTo(o2.id) }
-                    .map { Entry(getXValueFromDate(it.id), s.valueGetter.invoke(it)) }
+                    .map { Entry(getXValueFromDate(it.id), s.historyValueGetter.invoke(it)) }
                     .collect(Collectors.toList())
 
             if (data.isEmpty()) continue

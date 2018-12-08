@@ -12,7 +12,6 @@ import android.widget.Toast
 import de.sharknoon.officesense.R
 import de.sharknoon.officesense.models.Sensors
 import de.sharknoon.officesense.networking.getSensorValues
-import de.sharknoon.officesense.utils.cut
 
 class SensorsFragment : Fragment() {
 
@@ -50,7 +49,7 @@ class SensorsFragment : Fragment() {
         getSensorValues(url, { v ->
             enumValues<Sensors>().forEach {
                 val textView = view.findViewById<TextView>(it.textView)
-                textView.text = getString(it.unit, it.valuesGetter.invoke(v).cut(2).toString())
+                textView.text = getString(it.unit, it.currentValueStringGetter.invoke(v))
                 Toast.makeText(view.context, "Successfully reloaded", Toast.LENGTH_SHORT).show()
                 onFinish?.invoke()
             }

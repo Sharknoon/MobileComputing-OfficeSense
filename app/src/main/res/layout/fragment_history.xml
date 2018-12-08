@@ -72,7 +72,7 @@
                     android:layout_below="@+id/buttonCurrentDate"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/temperature"
-                    app:srcCompat="@drawable/ic_temperature" />
+                    app:srcCompat="@drawable/ic_temperature_filled" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -98,7 +98,7 @@
                     android:layout_below="@+id/temperatureGraph"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/light"
-                    app:srcCompat="@drawable/ic_light" />
+                    app:srcCompat="@drawable/ic_light_filled" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -124,7 +124,7 @@
                     android:layout_below="@+id/lightGraph"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/humidity"
-                    app:srcCompat="@drawable/ic_humidity" />
+                    app:srcCompat="@drawable/ic_humidity_filled" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -150,7 +150,7 @@
                     android:layout_below="@+id/humidityGraph"
                     android:layout_marginTop="10dp"
                     android:contentDescription="@string/noise"
-                    app:srcCompat="@drawable/ic_noise" />
+                    app:srcCompat="@drawable/ic_noise_filled" />
 
                 <TextView
                     android:layout_width="wrap_content"

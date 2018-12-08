@@ -6,19 +6,20 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.preference.PreferenceManager
 import android.view.MenuItem
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
+import android.view.View
 import com.jakewharton.threetenabp.AndroidThreeTen
 import de.sharknoon.officesense.R
 import de.sharknoon.officesense.fragments.HistoryFragment
 import de.sharknoon.officesense.fragments.HomeFragment
 import de.sharknoon.officesense.fragments.SensorsFragment
+import de.sharknoon.officesense.service.IndoorClimateObserverService
 import de.sharknoon.officesense.utils.openFragment
 
 
@@ -27,63 +28,57 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //Most important things
         AndroidThreeTen.init(this)
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
+
+        Intent(this, IndoorClimateObserverService::class.java)
+                .also { startService(it) }
 
         setContentView(R.layout.activity_main)
-
         createBottomNavigationBar()
-
         createDrawer()
-
         createNotificationChannel(this)
+    }
 
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
+    object vars {
+        var firstOpened = true
     }
 
     private fun createBottomNavigationBar() {
-        val bottomNavigation = findViewById<AHBottomNavigation>(R.id.bottom_navigation)
-
-        // Create items
-        val itemHome = AHBottomNavigationItem(R.string.title_home, R.drawable.ic_home, R.color.colorPrimary)
-        val itemSensors = AHBottomNavigationItem(R.string.title_sensors, R.drawable.ic_sensors, R.color.colorAccent)
-        val itemHistory = AHBottomNavigationItem(R.string.title_history, R.drawable.ic_history, R.color.colorPrimary)
-
-        // Add items
-        bottomNavigation.addItem(itemHome)
-        bottomNavigation.addItem(itemSensors)
-        bottomNavigation.addItem(itemHistory)
-
-        //Bring the fancy colors to life
-        bottomNavigation.isColored = true
-
-        //Shows only the title when it is alive
-        bottomNavigation.titleState = AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE_FORCE
 
         //Creating Fragments
         val homeFragment = HomeFragment()
         val sensorsFragment = SensorsFragment()
         val historyFragment = HistoryFragment()
 
-        bottomNavigation.setOnTabSelectedListener(AHBottomNavigation.OnTabSelectedListener { position, _ ->
-            when (position) {
-                0 -> {
-                    openFragment(homeFragment)
-                    return@OnTabSelectedListener true
-                }
-                1 -> {
-                    openFragment(sensorsFragment)
-                    return@OnTabSelectedListener true
-                }
-                2 -> {
-                    openFragment(historyFragment)
-                    return@OnTabSelectedListener true
-                }
-            }
-            false
-        })
+        val bottomNavigationView = findViewById<View>(R.id.bottom_navigation) as BottomNavigationView
 
-        openFragment(homeFragment)
+        if (vars.firstOpened) {
+            vars.firstOpened = false
+            openFragment(homeFragment)
+        }
+
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.action_home -> {
+                    openFragment(homeFragment)
+                    true
+                }
+                R.id.action_sensors -> {
+                    openFragment(sensorsFragment)
+                    true
+                }
+                R.id.action_history -> {
+                    openFragment(historyFragment)
+                    true
+                }
+                else -> true
+            }
+        }
+
     }
+
 
     private fun createDrawer() {
         val dl = findViewById<DrawerLayout>(R.id.activity_main)
@@ -132,14 +127,16 @@ class HomeActivity : AppCompatActivity() {
             val name = getString(R.string.channel_name)
             val descriptionText = getString(R.string.channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel("ALARMS_CHANNEL", name, importance).apply {
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
             // Register the channel with the system
-            val notificationManager: NotificationManager =
+            val notificationManager =
                     context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }
 
 }
+
+const val CHANNEL_ID = "ALARMS_CHANNEL"

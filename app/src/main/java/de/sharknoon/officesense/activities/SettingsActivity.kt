@@ -46,7 +46,7 @@ class SettingsActivity : AppCompatActivity() {
             button.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 val groupKey = "com.android.example.WORK_EMAIL"
 
-                val newMessageNotification1 = NotificationCompat.Builder(context, channelId)
+                val newMessageNotification1 = NotificationCompat.Builder(context, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_logo)
                         .setContentTitle("Title 1")
                         .setContentText("You will not believe...")
@@ -56,8 +56,8 @@ class SettingsActivity : AppCompatActivity() {
 
                         .build()
 
-                val newMessageNotification2 = NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(R.drawable.ic_home)
+                val newMessageNotification2 = NotificationCompat.Builder(context, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_home_filled)
                         .setContentTitle("Title 2")
                         .setContentText("Please join us to celebrate the...")
                         .setGroup(groupKey)
@@ -65,11 +65,11 @@ class SettingsActivity : AppCompatActivity() {
                                 .bigText("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."))
                         .build()
 
-                val summaryNotification = NotificationCompat.Builder(context, channelId)
+                val summaryNotification = NotificationCompat.Builder(context, CHANNEL_ID)
                         .setContentTitle("Summary")
                         //set content text to support devices running API level < 24
                         .setContentText("Two new messages")
-                        .setSmallIcon(R.drawable.ic_about)
+                        .setSmallIcon(R.drawable.ic_about_filled)
                         //build summary info into InboxStyle template
                         .setStyle(NotificationCompat.InboxStyle()
                                 .addLine("Alex Faarborg Check this out")
@@ -91,8 +91,6 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
         }
-
-        private val channelId: String = "ALARMS_CHANNEL"
 
     }
 
