@@ -54,7 +54,7 @@ class SensorsFragment : Fragment() {
                 onFinish?.invoke()
             }
         }, {
-            Toast.makeText(view.context, "Error reloading because of a ${it.javaClass.simpleName}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(view.context, "Could not get history-data: $it", Toast.LENGTH_SHORT).show()
             onFinish?.invoke()
         })
 
