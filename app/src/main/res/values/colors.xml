@@ -5,6 +5,5 @@
     <color name="colorTemperature">#e67e22</color>
     <color name="colorLight">#c0392b</color>
     <color name="colorHumidity">#e67e22</color>
-    <color name="colorNoise">#c0392b</color>
     <color name="colorPrimaryDark">#bc4b00</color>
 </resources>

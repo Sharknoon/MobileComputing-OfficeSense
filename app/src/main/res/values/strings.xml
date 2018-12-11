@@ -13,8 +13,6 @@
     <string name="unit_light">%1$s lx</string>
     <string name="humidity">Humidity</string>
     <string name="unit_humidity">%1$s \%%</string>
-    <string name="noise">Noise</string>
-    <string name="unit_noise">%1$s db</string>
 
     <string name="channel_name">sensor_alarms</string>
     <string name="channel_description">This notifications are telling you about abnormal sensor values like a too high temperature or a too low humidity.</string>

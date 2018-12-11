@@ -84,26 +84,6 @@
                     android:textColor="@android:color/black"
                     android:textSize="30sp" />
 
-                <ImageView
-                    android:id="@+id/iconNoise"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
-                    android:contentDescription="@string/noise"
-                    app:srcCompat="@drawable/ic_noise_filled" />
-
-                <TextView
-                    android:id="@+id/textViewNoise"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/missing"
-                    android:textColor="@android:color/black"
-                    android:textSize="30sp" />
-
-
             </GridLayout>
         </GridLayout>
     </ScrollView>

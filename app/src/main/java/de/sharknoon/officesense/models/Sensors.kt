@@ -53,19 +53,6 @@ enum class Sensors(val sensorName: Int,
             40.0,
             70.0
 
-    ),
-    NOISE(
-            R.string.noise,
-            R.id.noiseGraph,
-            R.color.colorNoise,
-            { it.noise.toFloat() },
-            { it.noise },
-            { it.noise.cut(2).toString() },
-            R.id.textViewNoise,
-            R.drawable.ic_noise_filled,
-            R.string.unit_noise,
-            20.0,
-            60.0
     );
 
     fun getURLName() = name.toLowerCase()
