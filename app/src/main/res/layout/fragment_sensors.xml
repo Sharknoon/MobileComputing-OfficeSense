@@ -12,18 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-            <GridLayout
-                android:id="@+id/GridLayout1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="50dp"
+            android:layout_gravity="center"
                 android:columnCount="2"
                 android:orientation="horizontal"
                 android:rowCount="4">
@@ -85,6 +78,6 @@
                     android:textSize="30sp" />
 
             </GridLayout>
-        </GridLayout>
+
     </ScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>
