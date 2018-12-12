@@ -28,7 +28,7 @@ class SensorsFragment : Fragment() {
 
     private fun initSwipeRefreshLayout(view: View) {
         // Lookup the swipe container view
-        val swipeContainer = view.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
+        val swipeContainer = view.findViewById(R.id.swipeContainerSensors) as SwipeRefreshLayout
 
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener {
@@ -50,11 +50,11 @@ class SensorsFragment : Fragment() {
             enumValues<Sensors>().forEach {
                 val textView = view.findViewById<TextView>(it.textView)
                 textView.text = getString(it.unit, it.currentValueStringGetter.invoke(v))
-                Toast.makeText(view.context, "Successfully reloaded", Toast.LENGTH_SHORT).show()
-                onFinish?.invoke()
             }
+            //Toast.makeText(view.context, "Successfully reloaded", Toast.LENGTH_SHORT).show()
+            onFinish?.invoke()
         }, {
-            Toast.makeText(view.context, "Could not get history-data: $it", Toast.LENGTH_SHORT).show()
+            Toast.makeText(view.context, "Could not get sensor-data: $it", Toast.LENGTH_SHORT).show()
             onFinish?.invoke()
         })
 

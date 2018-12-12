@@ -93,9 +93,15 @@ class HistoryFragment : Fragment() {
         dataSet.setDrawFilled(true)
         dataSet.fillDrawable = gd
 
+        //Line for referenceValue
+        val referenceData = getReferenceData(sensor, getDateFromXValue(data[0].x), getDateFromXValue(data.last().x))
+
+        val lineData = LineData(dataSet, referenceData.first(), referenceData.last())
+        val chart = view.findViewById(sensor.graph) as LineChart
+        chart.data = lineData
+
         val desc = Description()
         desc.text = ""
-        val chart = view.findViewById(sensor.graph) as LineChart
         chart.description = desc
         chart.axisRight.isEnabled = false
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -108,10 +114,23 @@ class HistoryFragment : Fragment() {
 
         chart.legend.isEnabled = false
 
-        val lineData = LineData(dataSet)
-
-        chart.data = lineData
         chart.invalidate()
+    }
+
+    fun getReferenceData(s: Sensors, dt1: LocalDateTime, dt2: LocalDateTime): List<LineDataSet> {
+        val startMinEntry = Entry(getXValueFromDate(dt1), s.minValue.toFloat())
+        val endMinEntry = Entry(getXValueFromDate(dt2), s.minValue.toFloat())
+        val startMaxEntry = Entry(getXValueFromDate(dt1), s.maxValue.toFloat())
+        val endMaxEntry = Entry(getXValueFromDate(dt2), s.maxValue.toFloat())
+        val dataSetMin = LineDataSet(listOf(startMinEntry, endMinEntry), getString(s.sensorName) + "minimum")
+        val dataSetMax = LineDataSet(listOf(startMaxEntry, endMaxEntry), getString(s.sensorName) + "maximum")
+        dataSetMin.color = Color.BLACK
+        dataSetMax.color = Color.BLACK
+        dataSetMin.setDrawCircles(false)
+        dataSetMax.setDrawCircles(false)
+        dataSetMin.setDrawValues(false)
+        dataSetMax.setDrawValues(false)
+        return listOf(dataSetMin, dataSetMax)
     }
 
     private fun initDateRangeButtons(view: View) {
@@ -140,7 +159,7 @@ class HistoryFragment : Fragment() {
 
     private fun initSwipeRefreshLayout(view: View) {
         // Lookup the swipe container view
-        val swipeContainer = view.findViewById(R.id.swipeContainer) as SwipeRefreshLayout
+        val swipeContainer = view.findViewById(R.id.swipeContainerHistory) as SwipeRefreshLayout
 
         // Setup refreshSensorHistories listener which triggers new data loading
         swipeContainer.setOnRefreshListener {
@@ -208,8 +227,10 @@ class HistoryFragment : Fragment() {
 
     private fun getXValueFromDate(dateTime: LocalDateTime) = (dateTime.toEpochSecond(ZoneOffset.UTC) / 60).toFloat()
 
+    private fun getDateFromXValue(xValue: Float) = LocalDateTime.ofEpochSecond((xValue * 60).toLong(), 0, ZoneOffset.UTC)
+
     private fun getTextFromXValue(xValue: Float): String {
-        val localDateTime = LocalDateTime.ofEpochSecond((xValue * 60).toLong(), 0, ZoneOffset.UTC)
+        val localDateTime = getDateFromXValue(xValue)
         return when (currentDateRange) {
             DAY -> localDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
             WEEK -> localDateTime.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
@@ -219,11 +240,5 @@ class HistoryFragment : Fragment() {
     }
 
     private fun getTextFromYValue(xValue: Float, sensor: Sensors) = getString(sensor.unit, xValue.cut(1).toString())
-
-    private fun getMaxDateForDatePicker() = LocalDate.now()
-
-    private fun getMinDateForDatePicker() {
-
-    }
 
 }

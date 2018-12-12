@@ -13,7 +13,9 @@ enum class Sensors(val sensorName: Int,
                    val icon: Int,
                    val unit: Int,
                    val minValue: Double,
-                   val maxValue: Double) {
+                   val maxValue: Double,
+                   val stateRanges: Map<RoomStates, Pair<Int, Int>>,
+                   val multiplierFactor: Int) {
     TEMPERATURE(
             R.string.temperature,
             R.id.temperatureGraph,
@@ -24,8 +26,15 @@ enum class Sensors(val sensorName: Int,
             R.id.textViewTemperature,
             R.drawable.ic_temperature_filled,
             R.string.unit_temperature,
-            15.0,
-            28.0
+            19.0,
+            25.0,
+            mapOf(
+                    RoomStates.HORRIBLE to (Int.MIN_VALUE to Int.MAX_VALUE),
+                    RoomStates.BAD to (16 to 26),
+                    RoomStates.GOOD to (19 to 25),
+                    RoomStates.GREAT to (21 to 22)
+            ),
+            5
     ),
     LIGHT(
             R.string.light,
@@ -37,8 +46,15 @@ enum class Sensors(val sensorName: Int,
             R.id.textViewLight,
             R.drawable.ic_light_filled,
             R.string.unit_light,
-            40.0,
-            300.0
+            300.0,
+            1000.0,
+            mapOf(
+                    RoomStates.HORRIBLE to (Int.MIN_VALUE to Int.MAX_VALUE),
+                    RoomStates.BAD to (100 to 2000),
+                    RoomStates.GOOD to (300 to 1000),
+                    RoomStates.GREAT to (500 to 750)
+            ),
+            2
     ),
     HUMIDITY(
             R.string.humidity,
@@ -46,14 +62,18 @@ enum class Sensors(val sensorName: Int,
             R.color.colorHumidity,
             { it.humidity.toFloat() },
             { it.humidity },
-            { it.humidity.cut(2).toString() },
+            { it.humidity.toInt().toString() },
             R.id.textViewHumidity,
             R.drawable.ic_humidity_filled,
             R.string.unit_humidity,
-            40.0,
-            70.0
-
+            30.0,
+            70.0,
+            mapOf(
+                    RoomStates.HORRIBLE to (Int.MIN_VALUE to Int.MAX_VALUE),
+                    RoomStates.BAD to (20 to 80),
+                    RoomStates.GOOD to (30 to 70),
+                    RoomStates.GREAT to (40 to 60)
+            ),
+            3
     );
-
-    fun getURLName() = name.toLowerCase()
 }

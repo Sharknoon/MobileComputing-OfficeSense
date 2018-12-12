@@ -23,6 +23,7 @@
     <string name="one_month">1 Month</string>
     <string name="one_year">1 Year</string>
     <string name="room_climate">room climate</string>
+    <string name="unknown_room_climate">Unknown room climate</string>
 
 
 </resources>

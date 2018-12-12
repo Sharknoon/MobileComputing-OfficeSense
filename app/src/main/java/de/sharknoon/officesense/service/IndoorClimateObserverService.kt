@@ -2,13 +2,14 @@ package de.sharknoon.officesense.service
 
 import android.app.IntentService
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import de.sharknoon.officesense.R
 import de.sharknoon.officesense.activities.CHANNEL_ID
 import de.sharknoon.officesense.logic.Adjustments
-import de.sharknoon.officesense.logic.checkForRoomClimate
+import de.sharknoon.officesense.logic.checkForRoomClimateAdjustments
 import de.sharknoon.officesense.networking.getSensorValues
 
 class IndoorClimateObserverService : IntentService("IndoorClimateObserverService") {
@@ -35,11 +36,11 @@ class IndoorClimateObserverService : IntentService("IndoorClimateObserverService
         val notificationManager = NotificationManagerCompat.from(applicationContext)
 
         getSensorValues(url, { v ->
-            checkForRoomClimate(v).entries
+            checkForRoomClimateAdjustments(v).entries
                     .stream()
                     .map {
                         val sensorName = getString(it.key.sensorName)
-                        val adjustment = it.value.name.toLowerCase()
+                        val adjustment = it.value.name.toLowerCase().replace('_', ' ')
                         val formattedCurrentValue = getString(it.key.unit, it.key.currentValueStringGetter.invoke(v))
                         val (adjustmentVerb, formattedRecommendedValue) = when (it.value) {
                             Adjustments.TOO_HIGH -> Pair("at most", getString(it.key.unit, it.key.maxValue))
@@ -51,6 +52,8 @@ class IndoorClimateObserverService : IntentService("IndoorClimateObserverService
                                 .setContentText(
                                         "Warning: The ${sensorName}sensor senses $formattedCurrentValue, recommended is $adjustmentVerb $formattedRecommendedValue"
                                 )
+                                .setLargeIcon(BitmapFactory.decodeResource(resources, it.key.icon))
+                                .setStyle(NotificationCompat.BigTextStyle())
                                 .setGroup(groupKey)
                                 .build()
                     }
